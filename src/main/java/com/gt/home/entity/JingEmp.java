@@ -1,5 +1,8 @@
 package com.gt.home.entity;
 
+import lombok.Data;
+
+@Data
 public class JingEmp {
     public class kl {
         private  Integer id;
