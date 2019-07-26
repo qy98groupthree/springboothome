@@ -1,0 +1,52 @@
+#配置数据源
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/home?serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456
+
+
+  #关闭模板的缓存
+  thymeleaf:
+    cache: false
+  #允许重启
+  devtools:
+    remote:
+      restart:
+        enabled: true
+
+
+  jackson:
+    date-format: yyyy-MM-dd
+  resources:
+    static-locations: classpath:/static,classpath:/templates
+
+#  配置mybatis
+mybatis:
+  mapper-locations: mapper/*.xml
+  type-aliases-package: com.gt.home.entity
+
+
+#配置端口号和上下文路径
+server:
+  port: 8888
+
+
+
+    ###静态资源html.js 等等缓存（开发时设置为false） --必须配置
+    #  spring.thymeleaf.cache=false
+    #  spring.resources.chain.cache=false
+    #  #资源文件缓存时间 -1 永不过期       --必须配置
+    #  spring.messages.cache-seconds=10
+    ###开启    --必须配置
+    #  spring.devtools.restart.enabled=false
+    #  spring.devtools.restart.exclude=/META-INF/maven/**，/META-INF/resources/**，/resources/**，/static/**，/templates/**，/public/**
+    ###监听目录（可不设置）
+    #  spring.devtools.restart.additional-paths=src/main/webapp
+logging:
+  level:
+    com:
+      jyl:
+        springbootdemo1:
+          dao: debug
