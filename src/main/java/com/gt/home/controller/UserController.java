@@ -31,7 +31,6 @@ public class UserController {
     public Object login(@RequestBody Map map){
         String account= map.get("account")+"";
         String password = map.get("password")+"";
-        System.out.println(map+".............................");
         Subject subject = SecurityUtils.getSubject();
         String msg="";
         if(account!=null&&!"".equals(account)) {
