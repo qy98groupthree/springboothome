@@ -41,9 +41,9 @@
             <if test="id!=null and id!=''">
                 and (id = #{id})
             </if>
-            <if test="username!=null and username!=''">
-                and (username like "%"#{username}"%"
-                or account like "%"#{username}"%")
+            <if test="account!=null and account!=''">
+                and (username like "%"#{account}"%"
+                or account like "%"#{account}"%")
             </if>
         </where>
     </select>
