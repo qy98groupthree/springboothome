@@ -1,6 +1,5 @@
 package com.gt.home.controller;
 
-import com.gt.home.entity.User;
 import com.gt.home.service.UserService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
