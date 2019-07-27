@@ -1,5 +1,6 @@
 package com.gt.home.utils;
 import com.gt.home.entity.User;
+import com.gt.home.service.EmpService;
 import com.gt.home.service.UserService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
@@ -20,7 +21,7 @@ import java.util.Map;
 public class MyShiroRealm extends AuthorizingRealm implements Serializable{
 
 	@Autowired
-	private UserService userService;
+	private EmpService empService;
 
 	/**
 	 * 登录认证
@@ -41,7 +42,7 @@ public class MyShiroRealm extends AuthorizingRealm implements Serializable{
 		map.put("start",0);
 		map.put("pageSize",100);
 		//通过account查询
-		List<Map> users = userService.queryUser(map);
+		List<Map> users = empService.empLogin(map);
 		Map user =null;
 		if(users!=null&&users.size()>0){
 			user = users.get(0);

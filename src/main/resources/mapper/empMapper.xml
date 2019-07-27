@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace:命名空间：对应的dao接口的名字-->
+<mapper namespace="com.gt.home.dao.EmpDao">
+    <!--查询命令
+    id:对应dao接口中的方法 名字
+    resultType:结果类型
+    -->
+    <select id="empLogin" resultType="map">
+        select * from user_registry where account=#{account}
+    </select>
+</mapper>
