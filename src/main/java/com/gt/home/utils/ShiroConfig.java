@@ -27,14 +27,9 @@ public class ShiroConfig {
 		Map<String,String> filterChainDefinitionMap = new LinkedHashMap<String,String>();
 		// 配置不会被拦截的链接 顺序判断
 		//放开static resources
-		filterChainDefinitionMap.put("/image/**", "anon");
-		filterChainDefinitionMap.put("/images/**", "anon");
+		filterChainDefinitionMap.put("/img/**", "anon");
 		filterChainDefinitionMap.put("/css/**", "anon");
-		filterChainDefinitionMap.put("/asset/**", "anon");
-		filterChainDefinitionMap.put("/assets/**", "anon");
 		filterChainDefinitionMap.put("/js/**", "anon");
-		filterChainDefinitionMap.put("/script/**", "anon");
-		filterChainDefinitionMap.put("/style/**", "anon");
 		//验证token
 		filterChainDefinitionMap.put("/checkToken", "anon");
 		//放开登录注册以及首页
