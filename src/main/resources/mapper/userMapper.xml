@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace:命名空间：对应的dao接口的名字-->
+<mapper namespace="com.gt.home.dao.UserDao">
+    <!--查询命令
+    id:对应dao接口中的方法 名字
+    resultType:结果类型
+    -->
+
+<insert id="addUser" parameterType="User">
+    insert into user_registry(account,password,phone,username,head_portrait,status)
+    values (#{account},#{password},#{phone},#{username},#{headPortrait},#{status})
+</insert>
+
+<update id="updateUser" parameterType="User">
+    update user_registry set phone=#{phone},username=#{username},head_portrait=#{headPortrait} where id=#{id}
+</update>
+
+<delete id="deleteUser" parameterType="User">
+    delete from user_registry where id=#{id}
+</delete>
+
+<select id="queryUser" resultType="map">
+    select * from user_registry
+    <where>
+        <if test="id!=null and id!=''">
+            and (id = #{id})
+        </if>
+        <if test="account!=null and account!=''">
+            and (username like "%"#{account}"%"
+            or account like "%"#{account}"%")
+        </if>
+    </where>  limit ${start},${pageSize}
+</select>
+
+    <select id="queryPageCount" resultType="int">
+        select count(*) from user_registry
+        <where>
+            <if test="id!=null and id!=''">
+                and (id = #{id})
+            </if>
+            <if test="account!=null and account!=''">
+                and (username like "%"#{account}"%"
+                or account like "%"#{account}"%")
+            </if>
+        </where>
+    </select>
+</mapper>
