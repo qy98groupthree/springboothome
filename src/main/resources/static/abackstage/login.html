@@ -5,6 +5,19 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge"> 
 <meta name="viewport" content="width=device-width, initial-scale=1"> 
 <title>登录</title>
+    <style>
+        .color .el-form-item__label {
+            text-align: right;
+            vertical-align: middle;
+            float: left;
+            font-size: 20px;
+            color: #ffa12d;
+            line-height: 40px;
+            padding: 0 0 17px 0;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+    </style>
 	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 	<!-- 引入样式 -->
 	<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
@@ -29,10 +42,10 @@
 						<h3>宜居后台管理系统</h3>
 						<div id="app">
 							<el-form :model="form">
-								<el-form-item label="账号">
+								<el-form-item label="账号" class="color">
 									<el-input v-model="form.account" class="text"></el-input>
 								</el-form-item>
-								<el-form-item label="密码">
+								<el-form-item label="密码" class="color">
 									<el-input v-model="form.password" class="text" show-password ></el-input>
 								</el-form-item>
 							</el-form>
