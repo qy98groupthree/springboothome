@@ -1,0 +1,85 @@
+/*
+Volite css
+Zhao Wei
+*/
+
+#blogin{
+    height: 100%;
+}
+.blogin-wrap .ant-layout {
+    background: none;
+}
+
+.blogin-wrap .ant-layout-header,
+.blogin-wrap .ant-layout-footer {
+    text-align: center;
+    margin-top: 100px;
+    background: none;
+    color: #fff;
+}
+
+.blogin-wrap .ant-layout-header {
+    margin-bottom: 20px;
+}
+
+.blogin-wrap .ant-layout-header span img {
+    width: 60px;
+}
+
+.blogin-wrap .ant-layout-header span {
+    font-family: Avenir, Helvetica Neue, Arial, Helvetica, sans-serif;
+    font-size: 33px;
+    color: rgba(0, 0, 0, .85);
+    font-weight: 600;
+}
+
+.blogin-wrap .ant-layout-footer {
+
+    line-height: 1.5;
+}
+
+.blogin-wrap .ant-layout-sider {
+    color: #fff;
+    line-height: 120px;
+}
+
+.blogin-wrap .ant-layout-content {
+    background: none;
+    color: #fff;
+    min-height: 120px;
+    line-height: 120px;
+}
+
+.blogin-wrap .ant-layout-content .ant-card {
+
+    margin: 0 auto;
+    background-color: rgba(255, 250, 205, 0.5);
+    border-radius: 25px;
+    border: 2px solid rgba(255, 250, 205, 0);
+}
+
+.blogin-wrap > .ant-layout {
+    margin-bottom: 48px;
+}
+
+.blogin-wrap > .ant-layout:last-child {
+    margin: 0;
+}
+
+.blogin-wrap .login-form-forgot {
+    float: right;
+}
+
+.blogin-wrap .login-form-button {
+    width: 100%;
+}
+
+.ant-menu {
+    text-align: center;
+    background: none;
+    border-bottom: 3px solid #1890ff;
+}
+
+.ant-menu-item {
+    color: #1890ff;
+}

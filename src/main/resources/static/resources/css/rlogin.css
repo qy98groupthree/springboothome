@@ -1,0 +1,496 @@
+/*
+Volite css
+Zhao Wei
+*/
+h4, h5, h6,
+h1, h2, h3 {
+    margin-top: 0;
+}
+
+ul, ol {
+    margin: 0;
+}
+
+p {
+    margin: 0;
+}
+
+dd, dl, dt, li, ol, ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    font-family: 'Raleway', sans-serif;
+    font-size: 100%;
+    background: #fff;
+}
+
+body a {
+    transition: 0.5s all;
+    -webkit-transition: 0.5s all;
+    -o-transition: 0.5s all;
+    -ms-transition: 0.5s all;
+    -moz-transition: 0.5s all;
+}
+
+.header {
+    background: url(../images/background/6.jpeg) no-repeat center top;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    background-position: center;
+    height: 800px;
+}
+
+.header_top {
+    margin-top: 20px;
+    padding: 1em 0 0 0;
+    border: 2px solid rgba(255, 250, 205, 0);
+    box-shadow: 10px 10px 5px rgba(255, 250, 205, 0.2);
+    border-radius: 25px;
+    -moz-border-radius: 25px;
+    background-color: rgba(255, 250, 205, 0.5);
+}
+
+.top_left {
+    width: 27%;
+    float: left;
+    margin: -5px 0px 0px 15px;
+}
+
+.top_left .logo-img {
+    display: inline;
+}
+
+.top_left .logo-font {
+    display: inline;
+}
+
+.top_left .city {
+    display: inline;
+}
+
+#allmap {
+    display: inline-block;
+    height: 24px;
+    padding: 0 8px;
+    line-height: 24px;
+    text-align: center;
+    color: #fff;
+    margin-top: 8px;
+    cursor: pointer;
+    border-radius: 14px;
+    border: 2px solid #fff;
+    font-size: 12px;
+}
+
+.top-nav {
+    float: left;
+    width: 55%;
+    margin-top: 25px;
+}
+
+.top-nav ul {
+    margin: 0;
+    padding: 0;
+}
+
+.top-nav ul li {
+    list-style-type: none;
+    display: inline-block;
+    margin: 0 4%;
+}
+
+.top-nav ul li a {
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: 500;
+    color: #0C0C0C;
+    position: relative;
+    letter-spacing: 1px;
+    padding-bottom: 20px;
+    text-transform: uppercase;
+}
+
+.top-nav ul li a:hover,
+.top-nav ul li a:focus {
+    outline: none;
+}
+
+.top-nav ul li a::after {
+    position: absolute;
+    top: 75%;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: #e2b32a;
+    content: '';
+    opacity: 0;
+    -webkit-transition: height 0.3s, opacity 0.3s, -webkit-transform 0.3s;
+    -moz-transition: height 0.3s, opacity 0.3s, -moz-transform 0.3s;
+    transition: height 0.3s, opacity 0.3s, transform 0.3s;
+    -webkit-transform: translateY(-10px);
+    -moz-transform: translateY(-10px);
+    transform: translateY(-10px);
+}
+
+.top-nav ul li a:hover::after,
+.top-nav ul li a:focus::after, .top-nav ul li a.active::after {
+    height: 3px;
+    opacity: 1;
+    -webkit-transform: translateY(0px);
+    -moz-transform: translateY(0px);
+    transform: translateY(0px);
+}
+
+ul.widget {
+    padding: 0;
+    list-style: none;
+    float: right;
+    width: 10%;
+    margin-right: 40px;
+}
+
+ul.widget li {
+    display: inline-block;
+}
+
+ul.widget li.join {
+    background: #e2b32a;
+    color: #fff;
+    text-transform: uppercase;
+    padding: 7px 22px;
+
+    border: 2px solid #e2b32a;
+    border-radius: 25px;
+    -moz-border-radius: 25px;
+}
+ul.widget li.login {
+    color: #fff;
+    text-transform: uppercase;
+    padding: 7px 23px;
+    border: 2px solid #e2b32a;
+    margin-bottom: 5px;
+    margin-right: 6%;
+    border-radius: 25px;
+    -moz-border-radius: 25px;
+}
+
+ul.widget li.join:hover {
+    border: 2px solid #e2b32a;
+    background: none;
+    border-radius: 25px;
+    -moz-border-radius: 25px;
+}
+
+ul.widget li.login:hover {
+    background: #e2b32a;
+    border-radius: 25px;
+    -moz-border-radius: 25px;
+    margin-bottom: 5px;
+
+}
+
+/*表单部分*/
+.form-register {
+    text-align: center;
+}
+
+.form-box {
+    margin: 0 auto;
+    width: 70%;
+    margin-top: 90px;
+    border-radius: 40px;
+}
+
+.form-top {
+    overflow: hidden;
+    padding: 0 25px 15px 25px;
+    background: rgba(47, 47, 47, 0.7);
+    border-radius: 40px 40px 0 0;
+    text-align: center;
+}
+
+.form-top-left {
+    width: 100%;
+    padding-top: 25px;
+}
+
+.form-top-left h3 {
+    margin-top: 0;
+    color: #dbd19b;
+    font-family: Microsoft YaHei;
+    font-weight: bold;
+    font-size: 35px;
+}
+
+.form-middle {
+    background: #e2b32a;
+    height: 5px;
+}
+
+.form-bottom {
+    padding: 25px 25px 30px 25px;
+    background: rgba(47, 47, 47, 0.6);
+    border-radius: 0 0 40px 40px;
+    text-align: center;
+}
+
+.inputClass {
+    position: relative;
+    height: 50px;
+    width: 550px;
+    font-size: 15px;
+    border: 2px solid #ffe680;
+    border-radius: 20px;
+    margin: 20px auto;
+    color: #fff;
+}
+
+input {
+    position: absolute;
+    font-size: 15px;
+    padding-left: 10px;
+    width: 80%;
+    height: 70%;
+    left: 43px;
+    top: 5px;
+    outline: none;
+    background: none;
+    border: 0px;
+}
+
+
+/*精灵图*/
+.phoneSpan {
+    /*1.导入背景图*/
+    background-image: url(../images/login_ico.png);
+    position: absolute;
+    left: 20px;
+    top: 8px;
+    /*设置背景所在的容器的大小*/
+    width: 25px;
+    height: 25px;
+    /*设置背景的起始位置*/
+    /*
+     * 注意：
+     * 		取图像右边的内容，坐标 0 - x
+     * 		取图像下边的内容，坐标 0 - y
+     *
+    ️ */
+    background-position: -85px -115px;
+}
+
+/*短信验证码精灵图*/
+.tellcodeSpan {
+    background-image: url(../images/login_ico.png);
+    position: absolute;
+    left: 20px;
+    top: 8px;
+    width: 25px;
+    height: 25px;
+    background-position: -85px 4px;
+}
+
+.dxyzm {
+    background-color: #DDAA00;
+    margin-top: 2px;
+    margin-left: 399px;
+    border-radius: 20px;
+    width: 100px;
+    color: #fff;
+}
+
+/*密码精灵图*/
+.passwordSpan {
+    background-image: url(../images/login_ico.png);
+    position: absolute;
+    left: 20px;
+    top: 8px;
+    width: 25px;
+    height: 25px;
+    background-position: -125px -34px;
+}
+
+.agreement {
+    position: relative;
+    height: 50px;
+    width: 550px;
+    font-size: 15px;
+    border-radius: 20px;
+    margin: 20px auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    color: #fff;
+}
+
+
+
+.reClass {
+    position: relative;
+    background-color: #e2b32a;
+    width: 150px;
+    margin: 20px auto;
+    height: 50px;
+    border-radius: 30px;
+    text-align: center;
+}
+
+.reClass a {
+    /*去除下划线*/
+    text-decoration: none;
+    color: white;
+    font-size: 30px;
+}
+
+
+/*foot*/
+.footer_bottom {
+    background: #2f2f2f;
+    padding: 5em 0;
+    width: 100%;
+    background: url("../images/background/bedrock.png") 0 0 repeat;
+    padding-top: 0;
+    height: 200px;
+}
+
+.ft {
+    padding: 10px 0 20px;
+    line-height: 1.8;
+    color: #fff;
+    border: none;
+    font-size: 14px;
+    margin: 0 auto;
+    width: 960px;
+}
+
+.ft a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.copy {
+    text-align: center;
+    margin-top: 3em;
+    float: left;
+}
+
+.copyright {
+    text-align: center;
+    margin-top: 1em;
+    float: right;
+}
+
+.copyleft {
+    text-align: center;
+    margin-top: 2em;
+    float: left;
+}
+
+.copy p {
+    color: #fff;
+    font-size: 1em;
+    margin-bottom: 1em;
+}
+
+.block.right {
+    position: relative;
+    width: 100%
+}
+
+.block.right div {
+    position: relative;
+    width: 82px;
+    height: 80px;
+    float: left
+}
+
+.block.right em {
+    position: absolute;
+    width: 82px;
+    line-height: 14px;
+    float: left;
+    bottom: 0;
+    left: 0;
+    text-align: center;
+    font-weight: normal;
+}
+
+.block.right .pic {
+    position: relative;
+    margin-left: 11px;
+    width: 60px;
+    height: 60px
+}
+
+.block.right .tcqq .pic {
+    background: url("../images/icons.png") no-repeat -1025px -1600px;
+}
+
+.block.right .tcqq .pic:hover {
+    background-position: -1089px -1600px
+}
+
+.block.right .weibo .pic {
+    background: url("../images/icons.png") no-repeat -1025px -447px;
+}
+
+.block.right .weibo .pic:hover {
+    background-position: -1089px -447px
+}
+
+.block.right .weixin .pic {
+    color: #222;
+    background: url("../images/icons.png") no-repeat -1025px -640px;
+}
+
+.block.right .weixin .pic:hover {
+    background-position: -1089px -640px;
+}
+
+.block.right .qrcode-box-wrp {
+    width: 130px;
+    height: 130px;
+    background: #fff;
+    margin-top: -146px;
+    right: -23px;
+    position: absolute;
+    visibility: hidden;
+    opacity: 0;
+    transition: .2s;
+    z-index: 100000
+}
+
+.block.right .qrcode-box {
+    width: 128px;
+    height: 128px;
+    border: 1px solid #e5e9ef
+}
+
+.block.right .qrcode-box.qrcode-qq {
+    background: url(../images/qqcode.jpg) center center no-repeat
+}
+
+.block.right .qrcode-box.qrcode-weibo {
+    background: url(../images/weibocode.png) center center no-repeat
+}
+
+.block.right .qrcode-box.qrcode-weixin {
+    background: url(../images/weixincode.jpg) center center no-repeat
+}
+
+.block.right .qrcode-box .qrcode-box-arrow {
+    width: 130px;
+    height: 141px;
+    background: url(../images/jiao.png) bottom center no-repeat
+}
+
+.block.right .tcqq:hover .qrcode-box-wrp,
+.block.right .weibo:hover .qrcode-box-wrp,
+.block.right .weixin:hover .qrcode-box-wrp {
+    visibility: visible;
+    opacity: 1
+}
