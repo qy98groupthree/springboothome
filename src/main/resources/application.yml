@@ -20,7 +20,7 @@ spring:
   jackson:
     date-format: yyyy-MM-dd
   resources:
-    static-locations: classpath:/static,classpath:/templates
+    static-locations: classpath:/static
 
 #  配置mybatis
 mybatis:
