@@ -10,6 +10,31 @@
 		<script src="https://unpkg.com/element-ui/lib/index.js"></script>
 
 		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+		<style>
+			.avatar-uploader .el-upload {
+				border: 1px dashed #d9d9d9;
+				border-radius: 6px;
+				cursor: pointer;
+				position: relative;
+				overflow: hidden;
+			}
+			.avatar-uploader .el-upload:hover {
+				border-color: #409EFF;
+			}
+			.avatar-uploader-icon {
+				font-size: 28px;
+				color: #8c939d;
+				width: 178px;
+				height: 178px;
+				line-height: 178px;
+				text-align: center;
+			}
+			.avatar {
+				width: 178px;
+				height: 178px;
+				display: block;
+			}
+		</style>
 	</head>
 	<body>
 		<div id="app">
@@ -97,6 +122,18 @@
 								<el-input v-model="form.phone" autocomplete="off"></el-input>
 							</template>
 						</el-form-item>
+						<el-form-item label="人员头像" :label-width="formLabelWidth">
+							<el-upload
+									name="headPortrait"
+									class="avatar-uploader"
+									action="/uploadHeadPic"
+									:show-file-list="false"
+									:on-success="handleAvatarSuccess"
+									:before-upload="beforeAvatarUpload">
+								<img v-if="imageUrl" :src="imageUrl" class="avatar">
+								<i v-else class="el-icon-plus avatar-uploader-icon"></i>
+							</el-upload>
+						</el-form-item>
 					</el-form>
 					<div slot="footer" class="dialog-footer">
 						<el-button type="danger" @click="dialogFormVisible = false">取 消</el-button>
@@ -125,9 +162,12 @@
                         account: '',
                         password:'',
                         username: '',
-						phone: ''
+						phone: '',
+						headPortrait:'',
+						headPicName:''
                     },
                     formLabelWidth: '120px',
+					imageUrl:''
 	    		},
 				created:function(){
 	    		   this.loadData();
@@ -182,8 +222,9 @@
 					toSave:function(){
                         this.title='员工添加';
                         this.url="/addUser";
-                        this.form={account: '', password:'', username: '', phone: ''};
+                        this.form={account: '', password:'', username: '', phone: '',headPortrait: ''};
                         //让弹出框显示
+						this.imageUrl='';
                        this.dialogFormVisible=true;
 					},
 					handleEdit:function(index, row) {
@@ -194,6 +235,7 @@
                         this.form=row;
                         //让弹出框显示
                         this.dialogFormVisible=true;
+						this.imageUrl='';
                     },
 					saveData:function(){
 					    var self=this;
@@ -243,8 +285,25 @@
                                 message: '已取消删除'
                             });
                         });
-                        }
-                    }
+                        },
+					handleAvatarSuccess(res, file) {
+						this.imageUrl = URL.createObjectURL(file.raw);
+						this.form.headPicName = file.response.originalFilename;
+						this.form.headPortrait =file.response.newFileName;
+					},
+					beforeAvatarUpload:function(file) {
+						// var isJPG = file.type === 'img/jpeg';
+						var isLt2M = file.size / 1024 / 1024 < 2;
+
+						/*if (!isJPG) {
+							this.$message.error('上传头像图片只能是 JPG 格式!');
+						}*/
+						if (!isLt2M) {
+							this.$message.error('上传头像图片大小不能超过 2MB!');
+						}
+						return isLt2M;
+					}
+				}
 	    	});
 	    </script>
 	</body>

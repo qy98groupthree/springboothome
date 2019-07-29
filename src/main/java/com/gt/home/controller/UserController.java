@@ -1,13 +1,16 @@
 package com.gt.home.controller;
 
 import com.gt.home.service.UserService;
+import com.gt.home.utils.FtpUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,6 +23,8 @@ import java.util.Map;
 public class UserController {
     @Autowired
     private UserService userService;
+    @Autowired
+    private FtpUtil ftpUtil;
 
 
     /**
@@ -63,5 +68,21 @@ public class UserController {
     @RequestMapping("/deleteUser")
     public Object deleteUser(Integer id){
         return userService.deleteUser(id);
+    }
+
+    /**
+     * 文件上传
+     * @param headPortrait
+     * @return
+     */
+    @RequestMapping("/uploadHeadPic")
+    public Object uploadHeadPic(@RequestParam MultipartFile headPortrait){
+        System.out.println("......................");
+        String originalFilename = headPortrait.getOriginalFilename();
+        String newFileName = ftpUtil.upLoad(headPortrait);
+        Map map  = new HashMap();
+        map.put("originalFilename",originalFilename);
+        map.put("newFileName",newFileName);
+        return map;
     }
 }
