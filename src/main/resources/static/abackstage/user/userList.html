@@ -167,6 +167,7 @@
 						headPicName:''
                     },
                     formLabelWidth: '120px',
+					imageUrl:''
 	    		},
 				created:function(){
 	    		   this.loadData();
@@ -223,6 +224,7 @@
                         this.url="/addUser";
                         this.form={account: '', password:'', username: '', phone: '',headPortrait: ''};
                         //让弹出框显示
+						this.imageUrl='';
                        this.dialogFormVisible=true;
 					},
 					handleEdit:function(index, row) {
@@ -233,6 +235,7 @@
                         this.form=row;
                         //让弹出框显示
                         this.dialogFormVisible=true;
+						this.imageUrl='';
                     },
 					saveData:function(){
 					    var self=this;
@@ -283,7 +286,7 @@
                             });
                         });
                         },
-					handleAvatarSuccess:function(res, file) {
+					handleAvatarSuccess(res, file) {
 						this.imageUrl = URL.createObjectURL(file.raw);
 						this.form.headPicName = file.response.originalFilename;
 						this.form.headPortrait =file.response.newFileName;
