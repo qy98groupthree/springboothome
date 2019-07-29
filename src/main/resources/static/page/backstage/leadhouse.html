@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>蜗壳</title>
+    <link rel="icon" href="../../resources/images/favicon.ico"/>
+    <script src="../../resources/js/jquery.js"></script>
+    <script src="../../resources/vue/vue.js"></script>
+    <script src="../../resources/js/ele.js"></script>
+    <link href="../../resources/css/ele.css" rel="stylesheet">
+    <style>
+        #role {
+            height: 100%;
+            background-color: #DCDFE6;
+        }
+
+        #role img {
+            width: 50px;
+            margin-left: 5px;
+            margin-top: 0px;
+            float: left
+        }
+
+        #role h1 {
+            float: left;
+        }
+
+        body .el-container {
+            height: 100%;
+            margin-bottom: 40px;
+            border-radius: 2px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
+        }
+
+        .el-header, .el-footer {
+            background-color: #E4E7ED;
+            color: #333;
+            text-align: center;
+        }
+
+        .el-main {
+            height: 400px;
+            background-color: #EBEEF5;
+            color: #333;
+            text-align: center;
+        }
+
+        .el-main .el-table {
+            background-color: #F2F6FC;
+        }
+
+        .el-pagination {
+            margin-top: 15px;
+        }
+
+        #eform {
+            text-align: left;
+            float: right;
+        }
+
+        .el-form-item {
+            margin-top: 10px;
+        }
+
+        .el-table td, .el-table th {
+            text-align: center;
+        }
+
+        .yc {
+            text-align: left;
+        }
+
+        .yc .el-form-item {
+            width: 250px;
+            margin-bottom: 0px;
+            margin-left: 27px;
+        }
+
+        .el-input-group__append, .el-input-group__prepend {
+            padding: 0 5px;
+        }
+    </style>
+</head>
+<body>
+<div id="role">
+    <el-container>
+
+        <el-header>
+
+            <image src="../../resources/images/icon/房子.png"></image>
+            <h1>房源联系</h1>
+
+            <el-form :inline="true" class="demo-form-inline" id="eform">
+                <el-form-item label="区域">
+                    <el-input v-model="ladr" placeholder="区域、商圈或小区名" size="medium"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="load(1)" icon="el-icon-search">查询</el-button>
+                </el-form-item>
+            </el-form>
+
+        </el-header>
+        <el-main>
+            <el-table :data="tableData">
+                <el-table-column prop="id" label="房屋编号" width="100" sortable></el-table-column>
+                <el-table-column prop="ladr" label="房屋地址" width="200" sortable></el-table-column>
+                <el-table-column prop="remoney" label="期望租金"></el-table-column>
+                <el-table-column prop="lname" label="房东称呼"></el-table-column>
+                <el-table-column prop="lphone" label="房东电话" width="100"></el-table-column>
+                <el-table-column prop="lstate" label="房源状态" width="100"></el-table-column>
+                <el-table-column label="操作" style="width: auto;">
+                    <template slot-scope="props">
+                        <el-button size="mini" v-if="props.row.lstate=='未联系'" type="success" @click="updatelstate(props.row.id)">联系</el-button>
+                        <el-button size="mini" v-if="props.row.lstate=='已联系'" type="primary" disabled plain>已联系</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </el-main>
+
+        <el-footer>
+            <el-pagination
+                    @current-change="load"
+                    :current-page="current"
+                    :page-size="pageSize"
+                    layout="total,prev,pager,next,jumper"
+                    :total="total">
+            </el-pagination>
+        </el-footer>
+    </el-container>
+</div>
+<script>
+    new Vue({
+        el: "#role",
+        data: {
+            tableData: [], //数据表格
+            total: 0, //总数
+            pageSize: 5, //每页条数
+            current: 1, //当前页数
+            ladr: "", //查询条件
+        },
+        mounted: function () {
+            this.load(1);
+        },
+        methods: {
+            load: function (current) {
+                var _this = this;
+                $.ajax({
+                    type: "post",
+                    dataType: "json",
+                    url: "/house/getAllLeadhouse/" + current + "/" + this.pageSize,
+                    data: {hadr: _this.ladr},
+                    success: function (data) {
+                        //console.log(data);
+                        _this.tableData = data.object;
+                        _this.total = data.total;
+                        _this.pageSize = 5;
+                    }
+                });
+            },
+            updatelstate:function (id) {
+                //alert(id);
+                var _this = this;
+                $.ajax({
+                    type: "post",
+                    dataType: "json",
+                    url: "/house/updateLstate",
+                    data: {id: id},
+                    success: function (data) {
+                        if (data.code==200){
+                            _this.$message({
+                                message: data.msg,
+                                type: 'success'
+                            });
+                            _this.load(1); //刷新数据表格
+                        }
+                    }
+                });
+            }
+        }
+    })
+</script>
+</body>
+</html>

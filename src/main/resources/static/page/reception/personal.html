@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>蜗壳</title>
+    <link rel="icon" href="../../resources/images/favicon.ico"/>
+    <script src="../../resources/vue/vue.js"></script>
+    <script src="../../resources/js/jquery.js"></script>
+    <script src="../../resources/antd/moment.js"></script>
+    <script src="../../resources/antd/antd.min.js"></script>
+    <script src="../../resources/antd/ant-design-vue.js"></script>
+    <link href="../../resources/antd/antd.min.css" rel="stylesheet">
+
+    <style>
+        #components-layout-demo-fixed .logo {
+            width: 120px;
+            height: 31px;
+            background: rgba(255, 255, 255, .2);
+            margin: 16px 24px 16px 0;
+            float: left;
+        }
+
+        #components-layout-demo-fixed .logo img {
+            width: 120px;
+            height: 95px;
+            margin-top: -35px;
+        }
+
+        .lr, #cuslog {
+            padding-left: 0;
+            padding-right: 0;
+            float: right;
+        }
+    </style>
+</head>
+<body>
+<div id="house">
+    <a-layout id="components-layout-demo-fixed">
+        <a-layout-header :style="{ position: 'fixed', zIndex: 1, width: '100%' }">
+            <div class="logo" style="margin-left: 200px;"><img src="../../resources/images/logoko.png"></div>
+            <a-menu theme="dark" mode="horizontal" :style="{ lineHeight: '64px' }">
+                <a-menu-item key="1"><a href="../../index.html">首页</a></a-menu-item>
+                <a-menu-item key="2"><a href="houselist.html">租房</a></a-menu-item>
+                <a-menu-item key="3"><a href="">发布房源</a></a-menu-item>
+                <a-menu-item key="4">
+                    <a-popover>
+                        <template slot="content">
+                            <img width="100px" height="100px" src="../../resources/images/wokezufang.png">
+                        </template>
+                        <span><a href=""></a>蜗壳租房APP</span>
+                    </a-popover>
+                </a-menu-item>
+                <a-menu-item key="5" class="lr"><a href="register.html" style="margin-right: 220px;">注册</a></a-menu-item>
+                <a-menu-item key="6" class="lr">/</a-menu-item>
+                <a-menu-item key="7" class="lr"><a href="rlogin.html">登录</a></a-menu-item>
+                <a-menu-item id="cuslog" style="margin-right: 310px">
+                    <a-dropdown>
+						<span class="ant-dropdown-link cname">
+                            <span id="cus"></span>
+						</span>
+                        <a-menu slot="overlay" @click="yonghu">
+                            <a-menu-item key="grzx">
+                                个人中心
+                            </a-menu-item>
+                            <a-menu-item key="zx">
+                                注销
+                            </a-menu-item>
+                        </a-menu>
+                    </a-dropdown>
+                </a-menu-item>
+            </a-menu>
+        </a-layout-header>
+        <a-layout-content style="background-color: #fff;padding: 30px 250px;margin-top: 64px;">
+            <a-layout-content v-model="cusInfo" style="width: 150px;margin-right:30px;border: 1px solid lightgray;float: left">
+                <div><a-avatar style="margin-top: 35px;margin-left: 35px;" :src="cusInfo.cimg" shape="square" :size="80" icon="user" /></div>
+                <div style="text-align: center;margin: 10px 0;">欢迎你，{{cusInfo.cname}}</div>
+                <hr/>
+                <div>
+                    <a-menu mode="inline" style="text-align: center" :defaultSelectedKeys="['1']">
+                        <a-menu-item key="1">
+                            <a target="ifm" href="myfollowhouse.html">我关注的房源</a>
+                        </a-menu-item>
+                        <a-menu-item key="2">
+                            <a target="ifm" href="mypostedhouse.html">我发布的房源</a>
+                        </a-menu-item>
+                        <a-menu-item key="3">
+                            <a target="ifm" href="personinfo.html">个人资料</a>
+                        </a-menu-item>
+                    </a-menu>
+                </div>
+            </a-layout-content>
+            <a-layout-content style="width: 755px;height: 620px;padding: 35px;border: 1px solid lightgray;float: left">
+                <iframe name="ifm" height="100%" width="100%" frameborder="no" src="myfollowhouse.html"></iframe>
+            </a-layout-content>
+        </a-layout-content>
+        <a-layout-footer :style="{ textAlign: 'center' }">Copyright &copy; 2019.Volute.版权所有 | 本站内容版权属于原创，未经许可不得转载
+        </a-layout-footer>
+    </a-layout>
+</div>
+</body>
+<script>
+    new Vue({
+        el: "#house",
+        data: {
+            cusInfo:{},
+        },
+        mounted: function () {
+            this.load();
+        },
+        methods: {
+            load:function () {
+                var _this=this;
+                $.ajax({
+                    type: "post",
+                    dataType: "json",
+                    url: "/customer/getCusFromSession",
+                    success: function (data) {
+                        //console.log(data);
+                        _this.cusInfo=data.object;
+                    }
+                });
+            },
+            yonghu: function ({key}) {
+                var _this = this;
+                if (key == "zx") {
+                    this.$confirm({
+                        title: '确定退出?',
+                        okText: '确定',
+                        cancelText: '取消',
+                        onOk: function () {
+                            _this.killCusSession();
+                        }
+                    });
+                }
+                if (key == "grzx") {
+                    window.location.reload();
+                }
+            },
+            killCusSession: function () {
+                $.ajax({
+                    type: "post",
+                    dataType: "json",
+                    url: "/login/killCusSession",
+                    success: function () {
+                        window.location.href="houselist.html";
+                    }
+                });
+            },
+        }
+    });
+</script>
+<script>
+    $(function judgeCusLogin() {
+        $.ajax({
+            type: "post",
+            dataType: "json",
+            url: "/login/judgeCusLogin",
+            success: function (data) {
+                if (data.code == 200) {
+                    //alert(data.code);
+                    $(".lr").hide();
+                    $("#cus").show();
+                    $("#cus").html(data.object);
+                } else {
+                    $("#cus").hide();
+                    $(".lr").show();
+                }
+            }
+        });
+    });
+</script>
+</html>

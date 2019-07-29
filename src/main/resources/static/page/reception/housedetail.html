@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>蜗壳</title>
+    <link rel="icon" href="../../resources/images/favicon.ico"/>
+    <script src="../../resources/vue/vue.js"></script>
+    <script src="../../resources/js/jquery.js"></script>
+    <script src="../../resources/antd/moment.js"></script>
+    <script src="../../resources/antd/antd.min.js"></script>
+    <script src="../../resources/antd/ant-design-vue.js"></script>
+    <link href="../../resources/antd/antd.min.css" rel="stylesheet">
+    <link href="../../resources/css/home.css" rel="stylesheet"/>
+    <script src="../../resources/js/cusutil.js"></script>
+    <script type="text/javascript"
+            src="http://api.map.baidu.com/api?v=2.0&ak=M2kGUcWj1dSWhQvuNlrqWYPouAGVbBGT"></script>
+
+    <style>
+        #components-layout-demo-fixed .logo {
+            width: 120px;
+            height: 31px;
+            background: rgba(255, 255, 255, .2);
+            margin: 16px 24px 16px 0;
+            float: left;
+        }
+
+        #components-layout-demo-fixed .logo img {
+            width: 120px;
+            height: 95px;
+            margin-top: -35px;
+        }
+
+        .lr, #cuslog {
+            padding-left: 0;
+            padding-right: 0;
+            float: right;
+        }
+
+        #allmap {
+            display: inline-block;
+            height: 30px;
+            padding: 0 8px;
+            line-height: 24px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 14px;
+            border: 2px solid #fff;
+            font-size: 14px;
+            margin-bottom: -7px;
+        }
+
+        .zf {
+            margin-bottom: 10px;
+            margin-top: 10px;
+        }
+
+        .zf span {
+            margin-right: 15px;
+        }
+
+        #zflist a {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .zf img {
+            border-radius: 10px;
+            width: 250px;
+            height: 180px;
+            margin-left: 20px;
+        }
+
+        .ant-list-item-meta-title {
+            margin-bottom: 30px;
+        }
+
+        .ant-list-item-meta-content {
+            margin-left: 30px;
+        }
+
+        .ant-list-item-meta-description {
+            font-size: 15px;
+        }
+
+        .ant-list-item-meta-description span {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .ant-list-item-meta-description p {
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        .con {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .con span, a {
+            font-size: 15px;
+        }
+
+        #hprice {
+            color: red;
+            font-size: 18px;
+            margin: 30px;
+        }
+
+        .tags {
+            list-style: none;
+            float: left;
+            padding: 5px;
+            background-color: lightgray;
+            border-radius: 5px;
+            margin-right: 10px;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        .proi {
+            float: left;
+            margin-left: 25px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .proi img {
+            width: 45px;
+            height: 45px;
+        }
+
+        .prois {
+            width: 50px;
+        }
+
+        .d1 {
+            float: left;
+        }
+
+        #dlimg {
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+        }
+
+        .d1 p span {
+            margin-left: 20px;
+        }
+
+        #basetable td {
+            padding-right: 200px;
+            padding-top: 10px;
+            font-size: 16px;
+        }
+
+        .sheshi {
+            float: left;
+            text-align: center;
+        }
+
+        .sheshi img {
+            width: 32px;
+            height: 32px;
+        }
+
+        #ss td {
+            padding-top: 30px;
+            padding-bottom: 10px;
+            padding-right: 65px;
+        }
+    </style>
+    <style scoped>
+        /* For demo */
+        .ant-carousel .slick-slide {
+            text-align: center;
+            height: 500px;
+            line-height: 160px;
+            overflow: hidden;
+        }
+
+        .ant-carousel .custom-slick-arrow {
+            width: 25px;
+            height: 25px;
+            font-size: 25px;
+            color: #001529;
+            background-color: rgba(31, 45, 61, 0);
+            opacity: 0.3;
+        }
+
+        .ant-carousel .custom-slick-arrow:before {
+            display: none;
+        }
+
+        .ant-carousel .custom-slick-arrow:hover {
+            opacity: 0.5;
+        }
+
+        .ant-carousel .slick-slide h3 {
+            color: #fff;
+        }
+
+        .ant-carousel .slick-dots li.slick-active button {
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+<div id="house">
+    <a-layout id="components-layout-demo-fixed">
+        <a-layout-header :style="{ position: 'fixed', zIndex: 1, width: '100%' }">
+            <div class="logo"><img src="../../resources/images/logoko.png"></div>
+            <a-menu theme="dark" mode="horizontal" :defaultSelectedKeys="['2']" :style="{ lineHeight: '64px' }">
+                <a-menu-item key="1"><a href="../../index.html">首页</a></a-menu-item>
+                <a-menu-item key="2"><a href="houselist.html">租房</a></a-menu-item>
+                <a-menu-item key="3"><a href="">发布房源</a></a-menu-item>
+                <a-menu-item key="4">
+                    <a-popover>
+                        <template slot="content">
+                            <img width="100px" height="100px" src="../../resources/images/wokezufang.png">
+                        </template>
+                        <span><a href=""></a>蜗壳租房APP</span>
+                    </a-popover>
+                </a-menu-item>
+                <a-menu-item key="5" class="lr"><a href="register.html">注册</a></a-menu-item>
+                <a-menu-item key="6" class="lr">/</a-menu-item>
+                <a-menu-item key="7" class="lr"><a href="rlogin.html">登录</a></a-menu-item>
+                <a-menu-item id="cuslog">
+                    <a-dropdown>
+						<span class="ant-dropdown-link cname">
+                            <span id="cus"></span>
+						</span>
+                        <a-menu slot="overlay" @click="yonghu">
+                            <a-menu-item key="grzx">
+                                个人中心
+                            </a-menu-item>
+                            <a-menu-item key="zx">
+                                注销
+                            </a-menu-item>
+                        </a-menu>
+                    </a-dropdown>
+                </a-menu-item>
+            </a-menu>
+        </a-layout-header>
+        <a-layout-content style="background-color: #fff;padding: 0 100px; margin-top: 64px;">
+            <a-layout>
+                <a-layout-content style="margin-top: 20px;margin-left: 20px;">
+                    <div class="zf">
+                        <h1 style="display: inline">蜗壳租房 </h1>&nbsp;<h1 style="display: inline;color: gray">|</h1>&nbsp;
+                        <a id="allmap"></a>
+                    </div>
+                    <div class="zf">
+                        <a-input-search style="width: 500px" placeholder="请输入区域、商圈或小区名开始找房" @search=""
+                                        enterButton="Search" size="large"/>
+                    </div>
+                </a-layout-content>
+                <div style="background-color: white;padding-bottom: 20px;" :v-model="listDetail">
+                    <div class="con">
+                        <h1>{{listDetail.htitle}}</h1>
+                        <div class="con">
+                            <span>房源上架时间&nbsp;{{listDetail.releasedate}}</span>
+                            <span style="margin-left: 20px;">房源编号&nbsp;{{listDetail.houseid}}</span>
+                            <a-button @click="followHouse(listDetail.id)" type="primary" icon="heart"
+                                      :id="listDetail.id" v-if="toFollow"
+                                      style="margin-left: 370px">关注房源
+                            </a-button>
+                            <a-button icon="heart" v-if="hasFollow" style="margin-left: 370px" disabled>已关注</a-button>
+                            <a href="#" style="float: right;margin-right: 90px">举报</a>
+                        </div>
+                    </div>
+                    <div>
+                        <!--轮播图-->
+                        <div style="background-color: #fff;float: left;margin-left: 20px;width: 60%;">
+                            <a-carousel arrows>
+                                <div slot="prevArrow" slot-scope="props" class="custom-slick-arrow"
+                                     style="left: 10px;zIndex: 1">
+                                    <a-icon type="left-circle"/>
+                                </div>
+                                <div slot="nextArrow" slot-scope="props" class="custom-slick-arrow" style="right: 10px">
+                                    <a-icon type="right-circle"/>
+                                </div>
+                                <div v-for="k in listDetail.himgs">
+                                    <h3><img :src="k" style="width: 100%;height: 500px"></h3>
+                                </div>
+                            </a-carousel>
+                        </div>
+                        <!--右侧-->
+                        <div style="background-color: #fff;border: 1px solid lightgray;float: left;width: 30%;margin-left: 30px;height: 550px;padding: 15px 30px">
+                            <div style="margin-top: 20px">
+                                <span id="hprice"><span
+                                        style="font-size: 40px;font-weight: bold">{{listDetail.hrent}}</span>元/月</span>
+                                <div style="margin-top: 10px;margin-bottom: 10px;height: 55px">
+                                    <ul style="padding-left: 30px">
+                                        <li class="tags" v-for="item in listDetail.desctag">{{item}}</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <a-divider></a-divider>
+                            <div>
+                                <div class="proi">
+                                    <img src="../../resources/images/icon/home.png">
+                                    <div class="prois">租赁方式未知</div>
+                                </div>
+                                <div class="proi">
+                                    <img src="../../resources/images/icon/layout.png">
+                                    <div class="prois">{{listDetail.hdesc}}</div>
+                                </div>
+                                <div class="proi">
+                                    <img src="../../resources/images/icon/textarea.png">
+                                    <div class="prois">{{listDetail.hspace}}㎡</div>
+                                </div>
+                                <div class="proi">
+                                    <img src="../../resources/images/icon/compass.png">
+                                    <div class="prois">朝{{listDetail.orientation}}</div>
+                                </div>
+                            </div>
+                            <a-divider></a-divider>
+                            <div style="margin-left: 30px;">
+                                <div>
+                                    <div class="d1"><img id="dlimg" :src="empinfo.logoimg"></div>
+                                    <div class="d1" :model="empinfo">
+                                        <p style="margin-bottom: 10px">
+                                            <span style="color: black;font-size: 22px;font-weight: bold;">{{empinfo.ename}}</span>
+                                            <a-popover>
+                                                <template slot="content">
+                                                    <img width="220px" height="350px"
+                                                         src="../../resources/images/zhizhao.jpg">
+                                                </template>
+                                                <span id="cardimg"><img style="width: 20px;height: 20px"
+                                                                        src="../../resources/images/icon/id_card.png"></span>
+                                            </a-popover>
+                                        </p>
+                                        <p><span>蜗壳租房</span><span>经纪人</span></p>
+                                    </div>
+                                </div>
+                                <div>
+                                    <span style="width: 200px;margin-right: 18px;">
+                                        <a-button type="primary" @click="yuyue(listDetail.id)" size="large" style="font-size:20px;">预约看房</a-button>
+                                    </span>
+                                    <span>
+                                        <a-button size="large" :id="empinfo.id" icon="message" style="font-size:20px;">
+                                            <a :href="['tencent://message/?uin='+empinfo.eqq+'&Site=Sambow&Menu=yes']" style="color:#000">在线咨询</a>
+                                        </a-button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a-layout>
+            <!--基本信息-->
+            <hr/>
+            <div style="margin-left: 20px;margin-bottom: 20px;width: 970px;float: left">
+                <h1>房屋信息</h1>
+                <div>
+                    <table id="basetable">
+                        <tbody>
+                        <tr>
+                            <td style="font-size: 22px">基本信息</td>
+                            <td>发布：{{listDetail.newstime}}天前</td>
+                            <td>入住：随时入住</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>租期：暂无数据</td>
+                            <td>看房：一般下班后可看</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>楼层：{{listDetail.hfloor}}层</td>
+                            <td>电梯：有</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>车位：暂无数据</td>
+                            <td>用水：暂无数据</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>用电：暂无数据</td>
+                            <td>燃气：有</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <hr width="600px" style="margin-left: 210px"/>
+                <div style="margin-bottom: 50px;">
+                    <div style="font-size: 22px;float: left;width: 290px;height: 100px">配套设施</div>
+                    <div style="width: 800px;">
+                        <table id="ss">
+                            <tr>
+                                <td>
+                                    <div class="sheshi">
+                                        <img src="../../resources/images/icon/dianshi.png">
+                                        <div class="installation">电视</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="sheshi">
+                                        <img src="../../resources/images/icon/bingxiang.png">
+                                        <div class="installation">冰箱</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="sheshi">
+                                        <img src="../../resources/images/icon/xiyiji.png">
+                                        <div class="installation">洗衣机</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="sheshi">
+                                        <img src="../../resources/images/icon/kongtiao.png">
+                                        <div class="installation">空调</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="sheshi">
+                                        <img src="../../resources/images/icon/reshuiqi.png">
+                                        <div class="installation">热水器</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="sheshi">
+                                        <img src="../../resources/images/icon/chuang.png">
+                                        <div class="installation">床</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="sheshi">
+                                        <img src="../../resources/images/icon/nuanqi.png">
+                                        <div class="installation">暖气</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="sheshi">
+                                        <img src="../../resources/images/icon/kuandai.png">
+                                        <div class="installation">宽带</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="sheshi">
+                                        <img src="../../resources/images/icon/yigui.png">
+                                        <div class="installation">衣柜</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="sheshi">
+                                        <img src="../../resources/images/icon/tianranqi.png">
+                                        <div class="installation">天然气</div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <hr width="600px" style="margin-left: 210px"/>
+            </div>
+            <div style="float: left;width: 430px;height: 475px;margin-left:-106px;margin-top: 20px">
+                <div id="bdmap" style="width: 429px;height: 474px;overflow: visible"></div>
+            </div>
+        </a-layout-content>
+        <a-layout-footer :style="{ textAlign: 'center' }">Copyright &copy; 2019.Volute.版权所有 | 本站内容版权属于原创，未经许可不得转载
+        </a-layout-footer>
+    </a-layout>
+</div>
+</body>
+<script>
+    new Vue({
+        el: "#house",
+        data: {
+            listDetail: {},
+            current: 1,
+            total: 2,
+            count: 354,
+            empinfo: {},
+            toFollow: true,
+            hasFollow: false
+        },
+        mounted: function () {
+            this.load();
+        },
+        methods: {
+            load: function () {
+                var _this = this;
+                var str = window.location.search;
+                var id = str.substr(4);
+                $.ajax({
+                    type: "post",
+                    dataType: "json",
+                    url: "/house/houseDetail",
+                    data: {"id": id},
+                    success: function (data) {
+                        //console.log(data.object);
+                        _this.listDetail = data.object;
+                        var jd = data.object.longitude;
+                        var wd = data.object.latitude;
+                        var area = data.object.hadr;
+                        var index = area.lastIndexOf("\-");
+                        area = area.substr(index + 1);
+                        _this.BdMap(jd, wd, area);
+                        _this.empinfo = data.empinfo;
+                        _this.isFollow(data.object.id);
+                    }
+                });
+            },
+            yuyue:function(id){
+                var _this=this;
+                    if ($("#cus").html() == "") {
+                        this.$confirm({
+                            title: '请先登录',
+                            okText: '确定',
+                            cancelText: '取消',
+                            onOk: function () {
+                                window.location.href = "rlogin.html";
+                            }
+                        });
+                    } else {
+                        $.ajax({
+                            type: "post",
+                            dataType: "json",
+                            url: "/newhouse/addHosofCus",
+                            data: {"id": id},
+                            success: function (data) {
+                                console.log(data);
+                                if (data.code == 200) {
+                                    _this.$message.success(data.msg);
+                                } else {
+                                    _this.$message.error(data.msg);
+                                }
+                            }
+                        });
+                    }
+            },
+            followHouse: function (id) {
+                var _this = this;
+                //alert(id);
+                if ($("#cus").html() == "") {
+                    this.$confirm({
+                        title: '请先登录',
+                        okText: '确定',
+                        cancelText: '取消',
+                        onOk: function () {
+                            window.location.href = "rlogin.html";
+                        }
+                    });
+                } else {
+                    $.ajax({
+                        type: "post",
+                        dataType: "json",
+                        url: "/house/followHouse",
+                        data: {"houseid": id},
+                        success: function (data) {
+                            //console.log(data)
+                            if (data.code == 200) {
+                                _this.$message.success(data.msg);
+                                setTimeout(function () {
+                                    window.location.reload();
+                                }, 1000);
+                            } else {
+                                _this.$message.error(data.msg);
+                            }
+                        }
+                    });
+                }
+            },
+            isFollow: function (hid) {
+                //alert(hid);
+                var _this = this;
+                $.ajax({
+                    type: "post",
+                    dataType: "json",
+                    url: "/house/isFollow",
+                    data: {"houseid": hid},
+                    success: function (data) {
+                        console.log(data);
+                        if (data.code == 200) {
+                            _this.toFollow = false;
+                            _this.hasFollow = true;
+                        } else {
+                            _this.hasFollow = false;
+                            _this.toFollow = true;
+                        }
+                    }
+                });
+            },
+            BdMap: function (jd, wd, area) {
+                var _this = this;
+                // 百度地图API功能
+                var map = new BMap.Map("bdmap");    // 创建Map实例
+                map.centerAndZoom(new BMap.Point(jd, wd), 14);  // 初始化地图,设置中心点坐标和地图级别
+                //添加地图类型控件
+                map.addControl(new BMap.MapTypeControl({
+                    mapTypes: [
+                        BMAP_NORMAL_MAP,
+                        BMAP_HYBRID_MAP
+                    ]
+                }));
+                var marker = new BMap.Marker(new BMap.Point(jd, wd));  // 创建标注
+                map.addOverlay(marker);
+                var label = new BMap.Label(area, {offset: new BMap.Size(20, -10)});
+                marker.setLabel(label);
+                map.setCurrentCity("郑州");          // 设置地图显示的城市 此项是必须设置的
+                map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+            },
+            yonghu: function ({key}) {
+                var _this = this;
+                if (key == "zx") {
+                    this.$confirm({
+                        title: '确定退出?',
+                        okText: '确定',
+                        cancelText: '取消',
+                        onOk: function () {
+                            _this.killCusSession();
+                        }
+                    });
+                }
+                if (key == "grzx") {
+                    //alert("个人中心")
+                    window.location.href = "personal.html";
+                }
+            },
+            killCusSession: function () {
+                $.ajax({
+                    type: "post",
+                    dataType: "json",
+                    url: "/login/killCusSession",
+                    success: function () {
+                        window.location.reload();
+                        //window.location.href="houselist.html";
+                    }
+                });
+            },
+        }
+    });
+</script>
+<script>
+    $(function judgeCusLogin() {
+        $.ajax({
+            type: "post",
+            dataType: "json",
+            url: "/login/judgeCusLogin",
+            success: function (data) {
+                if (data.code == 200) {
+                    //alert(data.code);
+                    $(".lr").hide();
+                    $("#cus").show();
+                    $("#cus").html(data.object);
+                } else {
+                    $("#cus").hide();
+                    $(".lr").show();
+                }
+            }
+        });
+    });
+</script>
+</html>

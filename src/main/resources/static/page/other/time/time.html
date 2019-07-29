@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <title>空木白 wuzuhua.cn</title>
+  <link rel="stylesheet" href="css/normalize.min.css">
+  <link rel='stylesheet prefetch' href='css/demo.css'>
+  <link rel="stylesheet" href="css/style.css">
+<style>
+
+@font-face {
+	font-family: 'Digital-7';
+	src: url(./font/digital-7.ttf);
+}
+
+@font-face {
+	font-family: 'Got No Time For That';
+	src: url(./font/Got_No_Time_For_That.ttf);
+}
+
+body {
+  text-align: center;
+  vertical-align: middle;
+  overflow: hidden;
+
+}
+
+a img {
+	width: 25px;
+}
+
+p {
+	font-family: Got No Time For That;
+	font-size:12pt;
+	font-weight:100;
+	text-shadow: 1px 1px 1px #000;
+	color: #ffffff;
+}
+
+</style>
+ <script>
+ setInterval(function(){
+  var date = new Date();
+  var format = [
+      ("0" + date.getHours()).substr(-2)
+    , ("0" + date.getMinutes()).substr(-2)
+    , ("0" + date.getSeconds()).substr(-2)
+  ].join(":");
+   
+  document.getElementById("output").innerHTML = format;
+}, 500);
+</script>
+<script type="text/javascript">
+
+function playPause() {
+  var myAudio = document.getElementById('myvideo');
+  if (myAudio.paused)
+    myAudio.play();
+  else
+    myAudio.pause();
+}
+
+</script>
+</head>
+
+<body>
+  <div id="container">
+    <img src="./images/1.jpg">
+    <img src="./images/2.jpg">
+	<img src="./images/3.jpg">
+	<img src="./images/4.jpg">
+</div>
+  <div id="large-header" class="large-header">
+
+  <canvas id="demo-canvas"></canvas>
+    <h1 class="main-title"><div id="output"></div>
+	<div>
+	<p><input type="button" onclick="playPause()" value=""><span style="color:white">  Fate/Grand Order</span>
+<button id="volup" onclick="document.getElementById('myvideo').volume += 0.1"></button> 
+ <button id="voldown" onclick="document.getElementById('myvideo').volume -= 0.1"></button> 
+	</p>
+	</div>
+	</h1>
+<script src="js/Pack.min.js"></script>
+<script src="js/node.js"></script>
+<script src="js/Lite.min.js"></script>
+<script src="js/index.js"></script>
+</div>
+<div id="video">
+<input type=button onclick="playPause()" value="Play/Pause">
+<video src="assets/video1.ogg" id="myvideo" width="320" height="240" autoplay>
+</video>
+
+<script>
+var myvid = document.getElementById('myvideo');
+var myvids = [
+  "assets/video1.ogg",
+  "assets/video2.ogg",
+  "assets/video3.ogg"
+  ];
+var activeVideo = 0;
+
+myvid.addEventListener('ended', function(e) {
+  // update the active video index
+  activeVideo = (++activeVideo) % myvids.length;
+
+  // update the video source and play
+  myvid.src = myvids[activeVideo];
+  myvid.play();
+});
+</script>
+</div>
+</body>
+</html>

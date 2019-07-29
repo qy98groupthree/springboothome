@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>蜗壳</title>
+    <link rel="icon" href="../../resources/images/favicon.ico"/>
+    <script src="../../resources/js/jquery.js"></script>
+    <script src="../../resources/vue/vue.js"></script>
+    <script src="../../resources/js/ele.js"></script>
+    <link href="../../resources/css/ele.css" rel="stylesheet">
+    <style>
+        #role {
+            height: 100%;
+            background-color: #DCDFE6;
+        }
+
+        #role img {
+            width: 50px;
+            margin-left: 5px;
+            margin-top: 0px;
+            float: left
+        }
+
+        #role h1 {
+            float: left;
+        }
+
+        body .el-container {
+            height: 100%;
+            margin-bottom: 40px;
+            border-radius: 2px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
+        }
+
+        .el-header, .el-footer {
+            background-color: #E4E7ED;
+            color: #333;
+            text-align: center;
+        }
+
+        .el-main {
+            height: 490px;
+            background-color: #EBEEF5;
+            color: #333;
+            text-align: center;
+        }
+
+        .el-main .el-table {
+            height: auto;
+            background-color: #F2F6FC;
+        }
+
+        .el-pagination {
+            margin-top: 15px;
+        }
+
+        #eform {
+            text-align: left;
+            float: right;
+        }
+
+        .el-form-item {
+            margin-top: 10px;
+        }
+
+        .el-table td, .el-table th {
+            text-align: center;
+        }
+
+        .yc {
+            text-align: left;
+        }
+
+        .yc .el-form-item {
+            width: 250px;
+            margin-bottom: 0px;
+            margin-left: 27px;
+        }
+        .el-input-group__append, .el-input-group__prepend{
+            padding: 0 5px;
+        }
+    </style>
+</head>
+<body>
+<div id="role">
+    <el-container>
+
+        <el-header>
+
+            <image src="../../resources/images/icon/房子.png"></image>
+            <h1>待审核房源</h1>
+
+            <el-form :inline="true" class="demo-form-inline" id="eform">
+                <el-form-item label="区域">
+                    <el-input v-model="hadr" placeholder="区域、商圈或小区名" size="medium"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="load(1)" icon="el-icon-search">查询</el-button>
+                </el-form-item>
+            </el-form>
+
+        </el-header>
+        <el-main>
+            <el-table :data="tableData">
+                <el-table-column type="expand">
+                    <template slot-scope="props">
+                        <el-form label-position="left" inline class="demo-table-expand">
+                            <div class="yc">
+                                <el-form-item label="房屋租金:">
+                                    <span>{{ props.row.hrent }}</span>
+                                </el-form-item>
+                                <el-form-item label="房屋楼层:">
+                                    <span>{{ props.row.hfloor }}</span>
+                                </el-form-item>
+                                <el-form-item label="房屋面积:">
+                                    <span>{{ props.row.hspace }}</span>
+                                </el-form-item>
+                            </div>
+                            <div class="yc">
+                                <el-form-item label="房屋朝向:">
+                                    <span>{{ props.row.orientation }}</span>
+                                </el-form-item>
+                                <el-form-item label="发布日期:">
+                                    <span>{{ props.row.releasedate }}</span>
+                                </el-form-item>
+                                <el-form-item label="房屋布局:">
+                                    <span>{{ props.row.hdesc }}</span>
+                                </el-form-item>
+                            </div>
+                            <div class="yc">
+                                <el-form-item label="描述标签:">
+                                    <span v-for="k in props.row.desctag">{{ k }}&nbsp;&nbsp;</span>
+                                </el-form-item>
+                                <el-form-item label="配套设施:">
+                                    <span v-for="ins in props.row.installation">{{ ins }}&nbsp;&nbsp;</span>
+                                </el-form-item>
+                            </div>
+                        </el-form>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="houseid" label="房屋编号" width="100"></el-table-column>
+                <el-table-column prop="htitle" label="房屋标题"></el-table-column>
+                <el-table-column prop="hadr" label="房屋地址"></el-table-column>
+                <el-table-column prop="hstate" label="房屋状态"  width="100"></el-table-column>
+                <el-table-column label="操作" style="width: auto;">
+                    <template slot-scope="props">
+                        <el-button v-if="props.row.hstate=='待审核'" :id="props.row.id" size="mini" @click="examine(props.row.id,props.row)" type="primary">审核</el-button>
+                        <el-button v-if="props.row.hstate=='待审核'" size="mini" type="warning" @click="opfrom(props.row)">驳回</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </el-main>
+
+        <el-footer>
+            <el-pagination
+                    @current-change="load"
+                    :current-page="current"
+                    :page-size="pageSize"
+                    layout="total,prev,pager,next,jumper"
+                    :total="total">
+            </el-pagination>
+        </el-footer>
+    </el-container>
+
+    <el-dialog title="驳回信息" :visible.sync="house" width="50%" center>
+        <el-form :model="housfrom" label-width="80px">
+
+            <input v-model="housfrom.id" hidden></input>
+
+            <el-form-item label="驳回原因:">
+                <el-input
+                        v-model="housfrom.examine"
+                        type="textarea"
+                        :rows="3"
+                        placeholder="请输入内容">
+                </el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-button @click="uphos" type="primary">确定</el-button>
+            </el-form-item>
+        </el-form>
+    </el-dialog>
+
+</div>
+<script>
+    new Vue({
+        el: "#role",
+        data: {
+            tableData: [], //数据表格
+            total: 0, //总数
+            pageSize: 7, //每页条数
+            current: 1, //当前页数
+            hadr: "", //查询条件
+            house:false, //驳回弹窗
+            housfrom:{}, //驳回表单
+        },
+        mounted: function () {
+            this.load(1);
+        },
+        methods: {
+            load: function (current) {
+                var _this = this;
+                $.ajax({
+                    type: "post",
+                    dataType: "json",
+                    url: "/house/unauditedHouse/" + current + "/" + this.pageSize,
+                    data: {hadr: _this.hadr},
+                    success: function (data) {
+                        console.log(data);
+                        _this.tableData = data.object;
+                        _this.total = data.total;
+                        _this.pageSize = 7;
+                    }
+                });
+            },
+            examine: function (id,row) {
+                console.log(id)
+                var _this = this;
+                $.ajax({
+                    type: "post",
+                    dataType: "json",
+                    url: "/house/updateOne",
+                    data:{id:id},
+                    success: function (data) {
+                        if (data.code == 200) {
+                            _this.$message({
+                                message: data.msg,
+                                type: 'success'
+                            });
+                            _this.load(1); //刷新数据表格
+                        } else {
+                            _this.$message.error(data.msg);
+                        }
+                    }
+                });
+            },
+            opfrom:function (row) {
+                this.house=true;
+                this.housfrom=row;
+            },
+            uphos:function () {
+                var _this=this;
+                $.ajax({
+                    type: "post",
+                    url: "/house/updateTwo",
+                    data:_this.housfrom,
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.code==200){
+                            _this.$message({
+                                message: data.msg,
+                                type: 'success'
+                            });
+                            _this.house = false;
+                            _this.load(1); //刷新数据表格
+                        }else{
+                            this.$message.error(data.msg);
+                        }
+                    }
+                });
+            },
+
+        }
+    })
+</script>
+</body>
+</html>

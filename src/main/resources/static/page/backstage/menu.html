@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>蜗壳</title>
+    <link rel="icon" href="../../resources/images/favicon.ico"/>
+    <script src="../../resources/js/jquery.js"></script>
+    <script src="../../resources/vue/vue.js"></script>
+    <script src="../../resources/js/ele.js"></script>
+    <link href="../../resources/css/ele.css" rel="stylesheet">
+    <style>
+        #menu {
+            height: 100%;
+            background-color: #DCDFE6;
+        }
+
+        #menu img {
+            width: 40px;
+            margin-left: -5px;
+            margin-top: 10px;
+            float: left
+        }
+
+        #menu h1 {
+            float: left;
+        }
+
+        body .el-container {
+            height: 99%;
+            margin-bottom: 40px;
+            border-radius: 2px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
+        }
+
+        .el-header, .el-footer {
+            background-color: #E4E7ED;
+            color: #333;
+            text-align: center;
+        }
+
+        .el-main {
+            height: 490px;
+            background-color: #EBEEF5;
+            color: #333;
+            text-align: center;
+        }
+
+        .el-main .el-table {
+            height: auto;
+            background-color: #F2F6FC;
+        }
+
+        .el-pagination {
+            margin-top: 15px;
+        }
+
+        .el-tabs{
+            height: 600px;
+        }
+
+        #father {
+            text-align: left;
+            float: right;
+        }
+
+        #son{
+            text-align: left;
+            float: right;
+        }
+
+        .el-form-item {
+            margin-top: 10px;
+        }
+
+        .el-table td, .el-table th {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div id="menu">
+    <el-tabs type="border-card">
+        <el-tab-pane label="父菜单">
+
+            <el-container style="padding:0px;">
+
+                <el-header>
+                    <image src="../../resources/images/icon/一级菜单.png"></image>
+                    <h1>&nbsp;父菜单</h1>
+
+                    <el-form :inline="true" class="demo-form-inline" id="father">
+                        <el-form-item label="菜单编号">
+                            <el-input v-model="father_pnum" placeholder="请输入菜单编号"></el-input>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-button type="primary" @click="fatherload(1)" icon="el-icon-search">查询</el-button>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-button type="success" @click="addFather" icon="el-icon-circle-plus-outline">添加</el-button>
+                        </el-form-item>
+                    </el-form>
+                </el-header>
+                <el-main style="height: 440px">
+                    <el-table :data="father" border>
+                        <el-table-column prop="pnum" label="菜单编号">
+
+                        </el-table-column>
+                        <el-table-column prop="title" label="菜单标题">
+
+                        </el-table-column>
+                        <el-table-column prop="icon" label="菜单图标">
+
+                        </el-table-column>
+                        <el-table-column label="操作">
+                            <template slot-scope="father">
+                                <el-button size="mini" @click="updateFather(father.row)" type="primary">
+                                    编辑
+                                </el-button>
+                                <el-button size="mini" @click="removeFather(father.row)" type="danger">
+                                    删除
+                                </el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </el-main>
+                <el-footer>
+                    <el-pagination
+                            @current-change="fatherload"
+                            :current-page="fatherPage"
+                            :page-size="fatherSize"
+                            layout="total,prev,pager,next,jumper"
+                            :total="fathertotal">
+                    </el-pagination>
+                </el-footer>
+            </el-container>
+
+        </el-tab-pane>
+
+        <el-dialog title="父菜单" :visible.sync="fatherFrom" width="40%" center>
+            <el-alert title="菜单图标请前往ant-design-vue官网寻找 或者使用默认 setting" type="info" :closable="false">
+            </el-alert>
+            <el-form :model="ffrom" label-width="80px">
+                <input type="hidden" v-model="ffrom.id"/>
+                <el-form-item label="菜单编号">
+                    <el-input v-model="ffrom.pnum"></el-input>
+                </el-form-item>
+                <el-form-item label="菜单标题">
+                    <el-input v-model="ffrom.title"></el-input>
+                </el-form-item>
+                <el-form-item label="菜单图标">
+                    <el-input v-model="ffrom.icon"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="fatherFrom = false">取 消</el-button>
+                <el-button type="primary" @click="saveFather">确 定</el-button>
+            </div>
+        </el-dialog>
+
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~分割~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+        <el-tab-pane label="子菜单">
+            <el-container>
+                <el-header>
+
+                    <image src="../../resources/images/icon/二级菜单.png"></image>
+                    <h1>&nbsp;子菜单</h1>
+                    <el-form :inline="true" class="demo-form-inline" id="son">
+                        <el-form-item label="菜单编号">
+                            <el-input v-model="son_pnum" placeholder="请输入菜单编号"></el-input>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-button type="primary" @click="sonload(1)" icon="el-icon-search">查询</el-button>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-button type="success" @click="addSon" icon="el-icon-circle-plus-outline">添加</el-button>
+                        </el-form-item>
+                    </el-form>
+
+                </el-header>
+                <el-main style="height: 440px">
+
+                    <el-table :data="son" border>
+                        <el-table-column prop="pnum" label="菜单编号">
+
+                        </el-table-column>
+                        <el-table-column prop="title" label="菜单标题">
+
+                        </el-table-column>
+                        <el-table-column prop="btitle" label="父菜单">
+
+                        </el-table-column>
+                        <el-table-column prop="url" label="菜单路径">
+
+                        </el-table-column>
+                        <el-table-column label="操作">
+                            <template slot-scope="son">
+                                <el-button size="mini" @click="updateSon(son.row)" type="primary">
+                                    编辑
+                                </el-button>
+                                <el-button size="mini" @click="removeSon(son.row)" type="danger">
+                                    删除
+                                </el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+
+                </el-main>
+                <el-footer>
+
+                    <el-pagination
+                            @current-change="sonload"
+                            :current-page="sonPage"
+                            :page-size="sonSize"
+                            layout="total,prev,pager,next,jumper"
+                            :total="sontotal">
+                    </el-pagination>
+
+                </el-footer>
+            </el-container>
+        </el-tab-pane>
+
+        <el-dialog title="子菜单" :visible.sync="sonFrom" width="40%" center>
+            <el-alert title="菜单路径如未开发完成 请使用默认 ../404.html" type="info" :closable="false">
+            </el-alert>
+            <el-form :model="sfrom" label-width="80px">
+                <input type="hidden" v-model="sfrom.id"/>
+                <el-form-item label="菜单编号">
+                    <el-input v-model="sfrom.pnum"></el-input>
+                </el-form-item>
+                <el-form-item label="菜单标题">
+                    <el-input v-model="sfrom.title"></el-input>
+                </el-form-item>
+                <el-form-item label="父菜单">
+                    <el-select v-model="sfrom.pid" placeholder="请选择父菜单" size="large">
+                        <el-option v-for="son in father" :label="son.title" :value="son.id"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="菜单路径">
+                    <el-input v-model="sfrom.url"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="sonFrom = false">取 消</el-button>
+                <el-button @click="saveSon" type="primary">确 定</el-button>
+            </div>
+        </el-dialog>
+
+
+    </el-tabs>
+</div>
+<script>
+    new Vue({
+        el: "#menu",
+        data: {
+            father: [], //父菜单表格
+            fathertotal: 0, //父菜单总数
+            fatherSize: 6, //父菜单每页条数
+            fatherPage: 1, //父菜单当前页数
+            father_pnum: "", //父菜单查询条件
+            fatherFrom:false, //父菜单表单
+            ffrom:{},//父菜单表单
+/*-------------------------------------分割-----------------------------------------------*/
+            son: [], //子菜单表格
+            sontotal: 0, //子菜单总数
+            sonSize: 6, //子菜单每页条数
+            sonPage: 1, //子菜单当前页数
+            son_pnum: "", //子菜单查询条件
+            sonFrom:false, //子菜单表单
+            sfrom:{},//子菜单表单
+        },
+        mounted: function () {
+            this.fatherload(1);
+            this.sonload(1);
+        },
+        methods:{
+            /*父菜单表格加载*/
+            fatherload: function (fatherPage) {
+                var _this = this;
+                $.ajax({
+                    type: "post",
+                    url: "/menu/getFatherMenu/" + fatherPage + "/" + this.fatherSize,
+                    data: {pnum: this.father_pnum},
+                    dataType: "json",
+                    success: function (data) {
+                        _this.father = data.object;
+                        _this.fathertotal = data.total;
+                        _this.fatherSize = 6;
+                    }
+                });
+            },
+            /*子菜单表格加载*/
+            sonload: function (sonPage) {
+                var _this = this;
+                $.ajax({
+                    type: "post",
+                    url: "/menu/getSonMenu/" + sonPage + "/" + this.sonSize,
+                    data: {pnum:this.son_pnum},
+                    dataType: "json",
+                    success: function (data) {
+                        _this.son = data.object;
+                        _this.sontotal = data.total;
+                        _this.sonSize = 6;
+                    }
+                });
+            },
+            /*父菜单添加按钮事件*/
+            addFather: function () {
+                this.fatherFrom = true;
+                this.ffrom = {};
+            },
+            /*子菜单添加按钮事件*/
+            addSon: function () {
+                this.sonFrom = true;
+                this.sfrom = {};
+            },
+            /*父菜单修改按钮事件*/
+            updateFather:function (row) {
+                this.fatherFrom = true;
+                this.ffrom = row;
+            },
+            /*子菜单修改按钮事件*/
+            updateSon:function (row) {
+                this.sonFrom = true;
+                this.sfrom = row;
+            },
+            /*父菜单表单提交事件*/
+            saveFather:function () {
+                var _this = this;
+                $.ajax({
+                    type: "post",
+                    url: "/menu/saveFatherMenu",
+                    data:this.ffrom,
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.code==200){
+                            _this.$message({
+                                message: data.msg,
+                                type: 'success'
+                            });
+                            _this.fatherFrom = false;
+                            _this.fatherload(1); //刷新数据表格
+                        }else{
+                            this.$message.error(data.msg);
+                        }
+                    }
+                });
+            },
+            /*子菜单表单提交事件*/
+            saveSon:function () {
+                var _this = this;
+                $.ajax({
+                    type: "post",
+                    url: "/menu/saveSonMenu",
+                    data:this.sfrom,
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.code==200){
+                            _this.$message({
+                                message: data.msg,
+                                type: 'success'
+                            });
+                            _this.sonFrom = false;
+                            _this.sonload(1); //刷新数据表格
+                        }else{
+                            this.$message.error(data.msg);
+                        }
+                    }
+                });
+            },
+            /*父菜单删除事件*/
+            removeFather:function (row) {
+                var _this=this;
+                if (row.id==400){
+                    _this.$message({
+                        message: "系统管理不能被删除",
+                        type: 'warning'
+                    });
+                }else{
+                    _this.$confirm('此操作将永久删除此父菜单和其下的子菜单, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(function () {
+                        $.ajax({
+                            type: "post",
+                            url: "/menu/deleteFatherMenu/"+row.id,
+                            dataType: "json",
+                            success: function (data) {
+                                if (data.code==200){
+                                    _this.$message({
+                                        message: data.msg,
+                                        type: 'success'
+                                    });
+                                    _this.fatherload(1); //刷新数据表格
+                                }else{
+                                    this.$message.error(data.msg);
+                                }
+                            }
+                        });
+                    }).catch(function () {
+                        _this.$message({
+                            type: 'info',
+                            message: '已取消删除!'
+                        });
+                    })
+                }
+            },
+            /*子菜单删除事件*/
+            removeSon:function (row) {
+                var _this=this;
+                if (row.id==401){
+                    _this.$message({
+                        message: "角色管理不能被删除",
+                        type: 'warning'
+                    });
+                }else if(row.id==402){
+                    _this.$message({
+                        message: "菜单管理不能被删除",
+                        type: 'warning'
+                    });
+                }else if(row.id==403){
+                    _this.$message({
+                        message: "权限管理不能被删除",
+                        type: 'warning'
+                    });
+                }else{
+                    _this.$confirm('此操作将永久删除此子菜单, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(function () {
+                        $.ajax({
+                            type: "post",
+                            url: "/menu/deleteSonMenu/"+row.id,
+                            dataType: "json",
+                            success: function (data) {
+                                if (data.code==200){
+                                    _this.$message({
+                                        message: data.msg,
+                                        type: 'success'
+                                    });
+                                    _this.sonload(1); //刷新数据表格
+                                }else{
+                                    this.$message.error(data.msg);
+                                }
+                            }
+                        });
+                    }).catch(function () {
+                        _this.$message({
+                            type: 'info',
+                            message: '已取消删除!'
+                        });
+                    })
+                }
+            },
+
+        }
+    })
+</script>
+</body>
+</html>

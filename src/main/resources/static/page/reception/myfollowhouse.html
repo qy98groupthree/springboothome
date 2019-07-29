@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="../../resources/images/favicon.ico"/>
+    <script src="../../resources/vue/vue.js"></script>
+    <script src="../../resources/js/jquery.js"></script>
+    <script src="../../resources/antd/moment.js"></script>
+    <script src="../../resources/antd/antd.min.js"></script>
+    <script src="../../resources/antd/ant-design-vue.js"></script>
+    <link href="../../resources/antd/antd.min.css" rel="stylesheet">
+</head>
+<style>
+    #ulinfo li {
+        list-style: none;
+        float: left;
+        padding: 5px;
+        background-color: lightgray;
+        border-radius: 5px;
+        margin-right: 5px;
+        font-size: 10px;
+    }
+
+    #zflist a {
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    #zflist span {
+        margin-right: 10px;
+    }
+
+    .ant-list-item-meta-description span {
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .ant-list-item-meta-description p {
+        margin-top: 10px;
+        font-size: 12px;
+    }
+
+    #price {
+        color: red;
+        font-size: 20px;
+        float: right;
+    }
+
+    .ant-list-item-meta-title {
+        margin-bottom: 15px;
+    }
+
+    .ant-list-item-meta-content {
+        margin-left: 30px;
+    }
+
+    .ant-list-item-meta-description {
+        font-size: 15px;
+    }
+</style>
+<body>
+<div id="house">
+    <div>
+        <h1 style="display: inline;">共
+            <span style="color: red;font-size:28px;display: inline;">{{count}}</span>
+            套 关注房源
+        </h1>
+    </div>
+    <div>
+        <a-list id="zflist" itemLayout="horizontal">
+            <a-list-item v-for="item in listData" :id="item.id">
+                <a-list-item-meta>
+                    <a slot="title" @click="houseDetail(item.id)" :hid="item.id">{{item.htitle}}</a>
+                    <span slot="description">{{item.hadr}}&nbsp;&nbsp;&nbsp;/</span>
+                    <span slot="description">{{item.hspace}}㎡&nbsp;&nbsp;&nbsp;/</span>
+                    <span slot="description">{{item.orientation}}&nbsp;&nbsp;&nbsp;/</span>
+                    <span slot="description">{{item.hdesc}}</span>
+                    <span id="price" slot="description">{{item.hrent}}<span slot="description">元/月</span></span>
+                    <p slot="description">
+                        <a-icon type="clock-circle"></a-icon>&nbsp;{{item.newstime}}天前发布
+                        <span style="float: right">
+                            <a-button type="primary" @click="unFollowing(item.id)" style="padding: 0;margin: 0;padding-left: 5px" icon="heart" type="mini">取消关注</a-button>
+                        </span>
+                    </p>
+                    <ul id="ulinfo" slot="description" style="padding-left: 0px;">
+                        <li slot="description" v-for="(k,index) in item.desctag">{{k}}</li>
+                    </ul>
+                    <img width="170px" height="120px" slot="avatar" :src="item.himg"/>
+                </a-list-item-meta>
+            </a-list-item>
+        </a-list>
+    </div>
+</div>
+</body>
+<script>
+    new Vue({
+        el: "#house",
+        data: {
+            listData: [],
+            count: 0,
+        },
+        mounted: function () {
+            this.load();
+        },
+        methods: {
+            load: function () {
+                var _this = this;
+                $.ajax({
+                    type: "post",
+                    dataType: "json",
+                    url: "/house/myFollowHouse",
+                    success: function (data) {
+                        //console.log(data)
+                        _this.listData = data.object;
+                        _this.count = data.total;
+                    }
+                });
+            },
+            houseDetail: function (hid) {
+                window.top.location.href = "housedetail.html?id=" + hid;
+            },
+            unFollowing:function (hid) {
+                var _this=this;
+                //alert(hid);
+                _this.$confirm({
+                    title: '确定取消关注?',
+                    okText: '确定',
+                    cancelText: '取消',
+                    onOk: function () {
+                        $.ajax({
+                            type: "post",
+                            dataType: "json",
+                            url: "/house/unFollow",
+                            data:{houseid:hid},
+                            success: function (data) {
+                                if (data.code==200){
+                                    window.location.reload();
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        }
+    });
+</script>
+</html>

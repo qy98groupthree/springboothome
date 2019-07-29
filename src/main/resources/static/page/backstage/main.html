@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>蜗壳</title>
+    <link rel="icon" href="../../resources/images/favicon.ico"/>
+    <script src="../../resources/js/jquery.js"></script>
+    <script src="../../resources/vue/vue.js"></script>
+    <script src="../../resources/js/ele.js"></script>
+    <script src="../../resources/js/skPlayer.min.js"></script>
+    <link href="../../resources/css/ele.css" rel="stylesheet">
+    <style>
+        #main {
+            height: auto;
+            background-color: #E9EEF3;
+        }
+
+        .el-footer {
+            background-color: #E9EEF3;
+            color: #333;
+            text-align: center;
+            line-height: 60px;
+        }
+
+        .el-main {
+            min-height: 490px;
+            background-color: #E9EEF3;
+            color: #333;
+            text-align: center;
+            line-height: 160px;
+        }
+
+        body > .el-container {
+            height: auto;
+            margin-bottom: 40px;
+        }
+
+        .text {
+            font-size: 14px;
+        }
+
+        .item {
+            padding: 18px 0;
+        }
+
+        .box-card {
+            height: 140px;
+            border: none;
+        }
+
+        .touxiang{
+            border-radius: 72px;
+            margin-top: 10px;
+            width: 72px;
+            height: 72px;
+        }
+
+        #skPlayer{
+            margin:10px auto 0;
+            box-shadow:none;
+        }
+
+    </style>
+    <script>
+        function show_date_time() {
+            window.setTimeout("show_date_time()", 1000);
+            BirthDay = new Date("4/17/2019 17:47:39");
+            today = new Date();
+            timeold = (today.getTime() - BirthDay.getTime());
+            sectimeold = timeold / 1000;
+            secondsold = Math.floor(sectimeold);
+            msPerDay = 24 * 60 * 60 * 1000;
+            e_daysold = timeold / msPerDay;
+            daysold = Math.floor(e_daysold);
+            e_hrsold = (e_daysold - daysold) * 24;
+            hrsold = Math.floor(e_hrsold);
+            e_minsold = (e_hrsold - hrsold) * 60;
+            minsold = Math.floor((e_hrsold - hrsold) * 60);
+            seconds = Math.floor((e_minsold - minsold) * 60);
+            span_dt_dt.innerHTML = "此破站已苟活:" + daysold + "天" + hrsold + "小时" + minsold + "分" + seconds + "秒";
+        }
+        show_date_time();
+    </script>
+</head>
+<body>
+<div id="main">
+    <el-container>
+        <el-card class="box-card" style="margin-bottom: 10px;">
+            <div class="text item" style="padding: 0px;">
+                <el-row :gutter="20">
+                    <el-col :span="6" style="width: 7%">
+                        <div class="grid-content bg-purple">
+                            <span>
+                                <img :src="emps.logoimg" class="touxiang">
+                            </span>
+                        </div>
+                    </el-col>
+                    <el-col :span="6" style="width: 50%">
+                        <div class="grid-content bg-purple">
+                            <h1>{{datatime}}！{{emps.username}}，{{hello}}</h1>
+                            <span>{{emps.edesc}}</span>
+                        </div>
+                    </el-col>
+                    <el-col :span="6" style="float: right;width: 40%;">
+                        <div class="grid-content bg-purple">
+
+                            <div id="skPlayer" style="border:none"></div>
+
+                        </div>
+                    </el-col>
+                </el-row>
+            </div>
+        </el-card>
+        <el-container>
+
+            <el-main>
+
+                <!--放松一下-->
+                <el-card class="box-card" style="height: auto">
+                    <div class="text item" style="padding:0;line-height: 0px;">
+                        <iframe src='../other/funney/funney.html' frameborder="0" scrolling="no" style="width: 100%;height:500px"></iframe>
+                    </div>
+                </el-card>
+
+            </el-main>
+
+
+            <el-aside style="width: 500px;">
+
+                <el-card class="box-card" style="margin: 10px;height:auto">
+                    <div class="text item" style="padding:0;line-height: 0px;">
+                        <iframe src='../other/time/time.html' frameborder="0" scrolling="no" style="width: 100%;height:300px"></iframe>
+                    </div>
+                </el-card>
+
+                <el-card class="box-card" style="margin: 10px;height: auto">
+                    <div slot="header" class="clearfix">
+                        <span>公告栏</span>
+                        <el-button style="float: right; padding: 3px 0" type="text" @click="addBull">添加公告</el-button>
+                    </div>
+                    <div class="text item">
+                        <div class="block">
+                            <el-timeline :reverse="true">
+                                <el-timeline-item v-for="bull in bulls" :timestamp="bull.releasetime" placement="top" icon="el-icon-more" color="#00BFFF">
+                                    <el-card>
+                                        <h4>{{bull.title}}</h4>
+                                        <p>{{bull.content}}</p>
+                                        <p>       ——{{bull.ename}}</p>
+                                    </el-card>
+                                </el-timeline-item>
+                                <el-pagination
+                                        @current-change="loadBull"
+                                        :current-page="currentPage"
+                                        :page-size="pageSize"
+                                        layout="total,prev,pager,next,jumper"
+                                        :total="total">
+                                </el-pagination>
+                            </el-timeline>
+                        </div>
+                    </div>
+                </el-card>
+
+            </el-aside>
+
+        </el-container>
+        <el-footer>
+            <!--网站苟活-->
+            <span id="span_dt_dt"></span>
+        </el-footer>
+    </el-container>
+
+
+    <el-dialog title="发布公告" :visible.sync="bullfrom" width="40%" center>
+
+        <el-form :model="bfrom" label-width="80px">
+            <input type="hidden" v-model="bfrom.id"/>
+            <el-form-item label="公告标题">
+                <el-input v-model="bfrom.title"></el-input>
+            </el-form-item>
+            <el-form-item label="公告内容">
+                <el-input
+                        type="textarea"
+                        :autosize="{ minRows: 2, maxRows: 4}"
+                        placeholder="请输入内容"
+                        v-model="bfrom.content">
+                </el-input>
+            </el-form-item>
+        </el-form>
+
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="bullfrom = false">取 消</el-button>
+            <el-button type="primary" @click="saveBull">确 定</el-button>
+        </div>
+    </el-dialog>
+
+
+</div>
+<script>
+    new Vue({
+        el: "#main",
+        data: {
+            bulls:[],//公告栏数据
+            emps: {}, //保存员工信息
+            datatime: "",//时间
+            hello:"",//问候语
+            pageSize: 5, //每页条数
+            currentPage: 1, //当前页数
+            total: 0, //总数
+            bullfrom:false, //公告弹出框
+            bfrom:{}, //公告表单
+        },
+        mounted: function () {
+            this.loadBull(1);
+            var _this = this;
+            var now = new Date();
+            var hour = now.getHours();
+            if (hour < 6) {
+                _this.datatime = "凌晨好";
+                _this.hello="还不休息吗？";
+            } else if (hour < 9) {
+                _this.datatime = "早上好"
+                _this.hello="记得吃早餐哦~";
+            } else if (hour < 12) {
+                _this.datatime = "上午好"
+                _this.hello="要认真工作哦~";
+            } else if (hour < 14) {
+                _this.datatime = "中午好"
+                _this.hello="休息一会吧~";
+            } else if (hour < 17) {
+                _this.datatime = "下午好"
+                _this.hello="我猜你可能累了~";
+            } else if (hour < 19) {
+                _this.datatime = "傍晚好"
+                _this.hello="辛苦了！";
+            } else if (hour < 22) {
+                _this.datatime = "晚上好"
+                _this.hello="早点回家吧~";
+            } else {
+                _this.datatime = "夜里好"
+                _this.hello="早点休息吧~";
+            }
+            $.ajax({
+                type: "post",
+                dataType: "json",
+                url: "/login/judgeEmpLogin",
+                success: function (data) {
+                    _this.emps = data.object;
+                }
+            });
+        },
+        methods: {
+            loadBull:function (currentPage) {
+              var _this=this;
+                $.ajax({
+                    type: "post",
+                    dataType: "json",
+                    url: "/bulletin/getAllBull/" + currentPage + "/" + this.pageSize,
+                    success: function (data) {
+                        _this.bulls = data.object;
+                        _this.total = data.total;
+                        _this.pageSize = 5;
+                    }
+                });
+            },
+            addBull:function () {
+                var _this=this;
+                if(_this.emps.roleid!=1){
+                    this.$message({
+                        message: '只有超管可以发布公告哦',
+                        type: 'warning'
+                    });
+                }else{
+                    _this.bullfrom=true;
+                    _this.bfrom={};
+                }
+            },
+            saveBull:function () {
+                _this=this;
+                $.ajax({
+                    type: "post",
+                    dataType: "json",
+                    url: "/bulletin/addBull",
+                    data:_this.bfrom,
+                    success: function (data) {
+                        if (data.code==200){
+                            _this.$message({
+                                message: data.msg,
+                                type: 'success'
+                            });
+                            _this.bullfrom = false;
+                            _this.loadBull(1); //刷新数据表格
+                        }else{
+                            this.$message.error(data.msg);
+                        }
+                    }
+                });
+            }
+        }
+    })
+
+
+    var player = new skPlayer({
+        autoplay: false,
+        //可选项,自动播放,默认为false,true/false
+        listshow: false,
+        //可选项,列表显示,默认为true,true/false
+        mode: 'listloop',
+        //可选项,循环模式,默认为'listloop'
+        //'listloop',列表循环
+        //'singleloop',单曲循环
+        music: {
+            //必需项,音乐配置
+            type: 'cloud',
+            //必需项,网易云方式指定填'cloud'
+            source: 2768962281
+            //必需项,网易云音乐歌单id
+            //登录网易云网页版,在网页地址中拿到
+            // ... playlist?id=317921676
+        }
+    });
+</script>
+</body>
+</html>

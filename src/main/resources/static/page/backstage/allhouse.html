@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>蜗壳</title>
+    <link rel="icon" href="../../resources/images/favicon.ico"/>
+    <script src="../../resources/js/jquery.js"></script>
+    <script src="../../resources/vue/vue.js"></script>
+    <script src="../../resources/js/ele.js"></script>
+    <link href="../../resources/css/ele.css" rel="stylesheet">
+    <style>
+        #role {
+            height: 100%;
+            background-color: #DCDFE6;
+        }
+
+        #role img {
+            width: 50px;
+            margin-left: 5px;
+            margin-top: 0px;
+            float: left
+        }
+
+        #role h1 {
+            float: left;
+        }
+
+        body .el-container {
+            height: 100%;
+            margin-bottom: 40px;
+            border-radius: 2px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
+        }
+
+        .el-header, .el-footer {
+            background-color: #E4E7ED;
+            color: #333;
+            text-align: center;
+        }
+
+        .el-main {
+            height: 490px;
+            background-color: #EBEEF5;
+            color: #333;
+            text-align: center;
+        }
+
+        .el-main .el-table {
+            height: auto;
+            background-color: #F2F6FC;
+        }
+
+        .el-pagination {
+            margin-top: 15px;
+        }
+
+        #eform {
+            text-align: left;
+            float: right;
+        }
+
+        .el-form-item {
+            margin-top: 10px;
+        }
+
+        .el-table td, .el-table th {
+            text-align: center;
+        }
+
+        .yc {
+            text-align: left;
+        }
+
+        .yc .el-form-item {
+            width: 250px;
+            margin-bottom: 0px;
+            margin-left: 27px;
+        }
+        .el-input-group__append, .el-input-group__prepend{
+            padding: 0 5px;
+        }
+    </style>
+</head>
+<body>
+<div id="role">
+    <el-container>
+
+        <el-header>
+
+            <image src="../../resources/images/icon/房子.png"></image>
+            <h1>所有房源</h1>
+
+            <el-form :inline="true" class="demo-form-inline" id="eform">
+                <el-form-item label="区域">
+                    <el-input v-model="hadr" placeholder="区域、商圈或小区名" size="medium"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="load(1)" icon="el-icon-search">查询</el-button>
+                </el-form-item>
+            </el-form>
+
+        </el-header>
+        <el-main>
+            <el-table :data="tableData">
+                <el-table-column type="expand">
+                    <template slot-scope="props">
+                        <el-form label-position="left" inline class="demo-table-expand">
+                            <div class="yc">
+                                <el-form-item label="房屋租金:">
+                                    <span>{{ props.row.hrent }}</span>
+                                </el-form-item>
+                                <el-form-item label="房屋楼层:">
+                                    <span>{{ props.row.hfloor }}</span>
+                                </el-form-item>
+                                <el-form-item label="房屋面积:">
+                                    <span>{{ props.row.hspace }}</span>
+                                </el-form-item>
+                            </div>
+                            <div class="yc">
+                                <el-form-item label="房屋朝向:">
+                                    <span>{{ props.row.orientation }}</span>
+                                </el-form-item>
+                                <el-form-item label="发布日期:">
+                                    <span>{{ props.row.releasedate }}</span>
+                                </el-form-item>
+                                <el-form-item label="房屋布局:">
+                                    <span>{{ props.row.hdesc }}</span>
+                                </el-form-item>
+                            </div>
+                            <div class="yc">
+                                <el-form-item label="描述标签:">
+                                    <span v-for="k in props.row.desctag">{{ k }}&nbsp;&nbsp;</span>
+                                </el-form-item>
+                                <el-form-item label="配套设施:">
+                                    <span v-for="ins in props.row.installation">{{ ins }}&nbsp;&nbsp;</span>
+                                </el-form-item>
+                            </div>
+                        </el-form>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="houseid" label="房屋编号" width="100"></el-table-column>
+                <el-table-column prop="htitle" label="房屋标题"></el-table-column>
+                <el-table-column prop="hadr" label="房屋地址"></el-table-column>
+                <el-table-column prop="hstate" label="房屋状态"  width="100"></el-table-column>
+                <el-table-column label="操作" style="width: auto;">
+                    <template slot-scope="props">
+                        <el-button size="mini" @click="update(props.row)" type="primary">编辑</el-button>
+                        <el-button size="mini" @click="remove(props.row)" type="danger">删除</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </el-main>
+
+        <el-footer>
+            <el-pagination
+                    @current-change="load"
+                    :current-page="current"
+                    :page-size="pageSize"
+                    layout="total,prev,pager,next,jumper"
+                    :total="total">
+            </el-pagination>
+        </el-footer>
+    </el-container>
+
+    <el-dialog title="房源信息" :visible.sync="housefrom" width="90%" center>
+
+        <el-form :model="hfrom" label-width="100px" :inline="true">
+            <input type="hidden" v-model="hfrom.id"/>
+            <el-form-item label="房屋编号">
+                <el-input v-model="hfrom.houseid" :disabled="true" style="width: 90px;"></el-input>
+            </el-form-item>
+            <el-form-item label="房东姓名">
+                <el-input v-model="hfrom.landlord" :disabled="true" style="width: 80px;"></el-input>
+            </el-form-item>
+            <el-form-item label="房屋标题">
+                <el-input v-model="hfrom.htitle" style="width: 400px;"></el-input>
+            </el-form-item>
+            <el-form-item label="房屋地址">
+                <el-input v-model="hfrom.hadr" style="width: 250px;"></el-input>
+            </el-form-item>
+            <el-form-item label="房屋租金">
+                <el-input v-model="hfrom.hrent" style="width: 110px;"><template slot="append">元/月</template></el-input>
+            </el-form-item>
+            <el-form-item label="房屋楼层">
+                <el-input v-model="hfrom.hfloor" :disabled="true" style="width: 80px;"><template slot="append">层</template></el-input>
+            </el-form-item>
+            <el-form-item label="房屋面积">
+                <el-input v-model="hfrom.hspace" :disabled="true" style="width: 80px;"><template slot="append">㎡</template></el-input>
+            </el-form-item>
+            <el-form-item label="房屋朝向">
+                <el-input v-model="hfrom.orientation" :disabled="true" style="width: 50px;"></el-input>
+            </el-form-item>
+            <el-form-item label="发布日期">
+                <el-input v-model="hfrom.releasedate" :disabled="true" style="width: 120px;"></el-input>
+            </el-form-item>
+            <el-form-item label="封面图片地址">
+                <el-input v-model="hfrom.himg" style="width: 220px;"><template slot="append">
+                        <el-tooltip placement="top">
+                            <div slot="content"><img width="300px" height="300px" :src="hfrom.himg" /></div>
+                            <el-button>查看</el-button>
+                        </el-tooltip>
+                </template></el-input>
+            </el-form-item>
+            <el-form-item label="房屋状态">
+                <el-select v-model="hfrom.state" style="width: 100px;" placeholder="请选择状态">
+                    <el-option v-for="sta in hossta" :label="sta.name" :value="sta.id"></el-option>
+                </el-select>
+            </el-form-item>
+        </el-form>
+
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="housefrom = false">取 消</el-button>
+            <el-button type="primary" @click="save">确 定</el-button>
+        </div>
+    </el-dialog>
+
+</div>
+<script>
+    new Vue({
+        el: "#role",
+        data: {
+            tableData: [], //数据表格
+            total: 0, //总数
+            pageSize: 7, //每页条数
+            current: 1, //当前页数
+            hadr: "", //查询条件
+            housefrom: false,
+            hfrom: {},
+            hossta:{}, //房屋状态
+        },
+        mounted: function () {
+            this.load(1);
+
+        },
+        methods: {
+            load: function (current) {
+                var _this = this;
+                $.ajax({
+                    type: "post",
+                    dataType: "json",
+                    url: "/house/houseBackList/" + current + "/" + this.pageSize,
+                    data: {hadr: _this.hadr},
+                    success: function (data) {
+                        console.log(data);
+                        _this.tableData = data.object;
+                        _this.total = data.total;
+                        _this.pageSize = 7;
+                    }
+                });
+            },
+            getHosSta:function(){
+                var _this=this;
+                $.ajax({
+                    type: "post",
+                    dataType: "json",
+                    url: "/house/getAllHosState",
+                    success: function (data) {
+                        _this.hossta = data;
+                    }
+                });
+            },
+            update: function (row) {
+                this.housefrom = true;
+                this.hfrom = row;
+                this.getHosSta();
+            },
+            save: function () {
+                var _this = this;
+                console.log(_this.hfrom);
+                $.ajax({
+                    type: "post",
+                    url: "/house/update",
+                    data: _this.hfrom,
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.code == 200) {
+                            _this.$message({
+                                message: data.msg,
+                                type: 'success'
+                            });
+                            _this.housefrom = false;
+                            _this.load(1); //刷新数据表格
+                        } else {
+                            this.$message.error(data.msg);
+                        }
+                    }
+                });
+            },
+            remove: function (row) {
+                var _this = this;
+                _this.$confirm('确定删除?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(function () {
+                    $.ajax({
+                        type: "post",
+                        url: "/house/remove",
+                        data:{id:row.id},
+                        dataType: "json",
+                        success: function (data) {
+                            if (data.code == 200) {
+                                _this.$message({
+                                    message: data.msg,
+                                    type: 'success'
+                                });
+                                _this.load(1); //刷新数据表格
+                            } else {
+                                _this.$message.error(data.msg);
+                            }
+                        }
+                    });
+                }).catch(function () {
+                    _this.$message({
+                        type: 'info',
+                        message: '已取消删除!'
+                    });
+                })
+            },
+        }
+    })
+</script>
+</body>
+</html>

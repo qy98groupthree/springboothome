@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>蜗壳</title>
+    <link rel="icon" href="../../resources/images/favicon.ico"/>
+    <script src="../../resources/js/jquery.js"></script>
+    <script src="../../resources/vue/vue.js"></script>
+    <script src="../../resources/js/ele.js"></script>
+    <link href="../../resources/css/ele.css" rel="stylesheet">
+    <style>
+        #cus {
+            height: 100%;
+            background-color: #DCDFE6;
+        }
+
+        #cus img {
+            width: 50px;
+            margin-left: 15px;
+            margin-top: 10px;
+            float: left
+        }
+
+        #cus h1 {
+            float: left;
+        }
+
+        body .el-container {
+            height: 100%;
+            margin-bottom: 40px;
+            border-radius: 2px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
+        }
+
+        .el-header, .el-footer {
+            background-color: #E4E7ED;
+            color: #333;
+            text-align: center;
+        }
+
+        .el-main {
+            height: 490px;
+            background-color: #EBEEF5;
+            color: #333;
+            text-align: center;
+        }
+
+        .el-main .el-table {
+            height: auto;
+            background-color: #F2F6FC;
+        }
+
+        .el-pagination {
+            margin-top: 15px;
+        }
+
+        #cform {
+            text-align: left;
+            float: right;
+        }
+
+        .el-form-item {
+            margin-top: 10px;
+        }
+
+        .el-table td, .el-table th {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div id="cus">
+    <el-container>
+
+        <el-header>
+
+            <image src="../../resources/images/icon/用户管理.png"></image>
+            <h1>&nbsp;客户管理</h1>
+
+            <el-form :inline="true" class="demo-form-inline" id="cform">
+                <el-form-item label="客户编号">
+                    <el-input v-model="c_cnumber" placeholder="请输入客户编号"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="load(1)" icon="el-icon-search">查询</el-button>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="success" @click="addCus" icon="el-icon-circle-plus-outline">添加</el-button>
+                </el-form-item>
+            </el-form>
+
+        </el-header>
+        <el-main>
+
+            <el-table :data="tableData" border>
+                <el-table-column prop="cnumber" label="客户编号">
+
+                </el-table-column>
+                <el-table-column prop="cname" label="客户名字">
+
+                </el-table-column>
+                <el-table-column prop="csex" label="客户性别" :formatter="csexFormat">
+
+                </el-table-column>
+                <el-table-column prop="cphone" label="客户手机">
+
+                </el-table-column>
+                <el-table-column prop="ccard" label="身份证号">
+
+                </el-table-column>
+                <el-table-column prop="cusername" label="用户名">
+
+                </el-table-column>
+                <el-table-column prop="csname" label="状态">
+
+                </el-table-column>
+                <el-table-column label="操作">
+                    <template slot-scope="role">
+                        <el-button size="mini" @click="update(role.row)" type="primary">
+                            编辑
+                        </el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </el-main>
+
+        <el-footer>
+            <el-pagination
+                    @current-change="load"
+                    :current-page="currentPage"
+                    :page-size="pageSize"
+                    layout="total,prev,pager,next,jumper"
+                    :total="total">
+            </el-pagination>
+        </el-footer>
+    </el-container>
+
+    <el-dialog title="客户" :visible.sync="cusfrom" width="40%" center>
+
+        <el-form :model="cfrom" label-width="80px">
+            <input type="hidden" v-model="cfrom.id"/>
+            <el-form-item label="客户名字">
+                <el-input v-model="cfrom.cname"></el-input>
+            </el-form-item>
+            <el-form-item label="客户性别">
+                <el-select v-model="cfrom.csex" placeholder="请选择性别">
+                    <el-option label="男" value="1"></el-option>
+                    <el-option label="女" value="2"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="客户手机">
+                <el-input v-model="cfrom.cphone"></el-input>
+            </el-form-item>
+            <el-form-item label="身份证号">
+                <el-input v-model="cfrom.ccard"></el-input>
+            </el-form-item>
+            <el-form-item label="客户状态">
+                <el-select v-model="cfrom.state" placeholder="请选择状态">
+                    <el-option v-for="state in cusstate" :label="state.csname" :value="state.id"></el-option>
+                </el-select>
+            </el-form-item>
+        </el-form>
+
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="cusfrom = false">取 消</el-button>
+            <el-button type="primary" @click="save">确 定</el-button>
+        </div>
+    </el-dialog>
+
+</div>
+<script>
+    new Vue({
+        el: "#cus",
+        data: {
+            tableData: [], //数据表格
+            total: 0, //总数
+            pageSize: 6, //每页条数
+            currentPage: 1, //当前页数
+            c_cnumber:"", //查询条件
+            cusfrom: false,
+            cfrom:{},
+            cusstate:[],//角色状态
+        },
+        mounted: function () {
+            this.load(1);
+        },
+        methods:{
+            load: function (currentPage) {
+                var _this = this;
+                $.ajax({
+                    type: "post",
+                    url: "/customer/getAllCus/" + currentPage + "/" + this.pageSize,
+                    data: {cnumber:this.c_cnumber},
+                    dataType: "json",
+                    success: function (data) {
+                        _this.tableData = data.object;
+                        _this.total = data.total;
+                        _this.pageSize = 6;
+                    }
+                });
+            },
+            addCus: function () {
+                this.cusfrom = true;
+                this.cfrom = {};
+                this.getCusState();
+            },
+            update:function(row){
+                this.cusfrom = true;
+                this.cfrom = row;
+                this.getCusState();
+            },
+            save:function () {
+                var _this = this;
+                $.ajax({
+                    type: "post",
+                    url: "/customer/saveCus",
+                    data:_this.cfrom,
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.code==200){
+                            _this.$message({
+                                message: data.msg,
+                                type: 'success'
+                            });
+                            _this.cusfrom = false;
+                            _this.load(1); //刷新数据表格
+                        }else{
+                            _this.$message.error(data.msg);
+                        }
+                    }
+                });
+            },
+            csexFormat:function(row,colum){
+                if(row.csex == 1) {
+                    return "男"
+                }else {
+                    return "女"
+                }
+            },
+            getCusState:function () {
+                var _this=this;
+                $.ajax({
+                    type: "post",
+                    url: "/customer/getCusState",
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.code==200){
+                            _this.cusstate=data.object;
+                        }
+                    }
+                });
+            }
+
+        }
+    })
+</script>
+</body>
+</html>

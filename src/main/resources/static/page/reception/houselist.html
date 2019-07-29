@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>蜗壳</title>
+    <link rel="icon" href="../../resources/images/favicon.ico"/>
+    <script src="../../resources/js/jquery.js"></script>
+    <script src="../../resources/vue/vue.js"></script>
+    <script src="../../resources/antd/moment.js"></script>
+    <script src="../../resources/antd/antd.min.js"></script>
+    <script src="../../resources/antd/ant-design-vue.js"></script>
+    <link href="../../resources/antd/antd.min.css" rel="stylesheet">
+    <link href="../../resources/css/home.css" rel="stylesheet"/>
+    <script src="../../resources/js/cusutil.js"></script>
+    <script type="text/javascript"
+            src="http://api.map.baidu.com/api?v=2.0&ak=M2kGUcWj1dSWhQvuNlrqWYPouAGVbBGT"></script>
+
+    <style>
+        #components-layout-demo-fixed .logo {
+            width: 120px;
+            height: 31px;
+            background: rgba(255, 255, 255, .2);
+            margin: 16px 24px 16px 0;
+            float: left;
+        }
+
+        #components-layout-demo-fixed .logo img {
+            width: 120px;
+            height: 95px;
+            margin-top: -35px;
+        }
+
+        .lr,#cuslog {
+            padding-left: 0;
+            padding-right: 0;
+            float: right;
+        }
+
+        #allmap {
+            display: inline-block;
+            height: 30px;
+            padding: 0 8px;
+            line-height: 24px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 14px;
+            border: 2px solid #fff;
+            font-size: 14px;
+            margin-bottom: -7px;
+        }
+        #ulinfo li{
+            list-style: none;
+            float: left;
+            padding: 5px;
+            background-color: lightgray;
+            border-radius: 5px;
+            margin-right: 10px;
+            font-size: 13px;
+        }
+
+        .zf {
+            margin-bottom: 10px;
+            margin-top: 10px;
+        }
+        .zf span{
+            margin-right: 15px;
+        }
+        #zflist a{
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .zf img{
+            border-radius: 10px;
+            width: 250px;
+            height: 180px;
+            margin-left: 20px;
+        }
+        .ant-list-item-meta-title{
+            margin-bottom: 30px;
+        }
+        .ant-list-item-meta-content{
+            margin-left: 30px;
+        }
+        .ant-list-item-meta-description{
+            font-size: 15px;
+        }
+        .ant-list-item-meta-description span{
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .ant-list-item-meta-description p{
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        #price{
+            color: red;
+            font-size: 26px;
+            float: right;
+        }
+    </style>
+</head>
+<body>
+<div id="house">
+    <a-layout id="components-layout-demo-fixed">
+        <a-layout-header :style="{ position: 'fixed', zIndex: 1, width: '100%' }">
+            <div class="logo"><img src="../../resources/images/logoko.png"></div>
+            <a-menu theme="dark" mode="horizontal" :defaultSelectedKeys="['2']" :style="{ lineHeight: '64px' }">
+                <a-menu-item key="1"><a href="../../index.html">首页</a></a-menu-item>
+                <a-menu-item key="2"><a href="">租房</a></a-menu-item>
+                <a-menu-item key="3"><a href="housingresource.html">发布房源</a></a-menu-item>
+                <a-menu-item key="4">
+                    <a-popover>
+                        <template slot="content">
+                            <img width="100px" height="100px" src="../../resources/images/wokezufang.png">
+                        </template>
+                        <span>蜗壳租房APP</span>
+                    </a-popover>
+                </a-menu-item>
+                <a-menu-item key="5" class="lr"><a href="register.html">注册</a></a-menu-item>
+                <a-menu-item key="6" class="lr">/</a-menu-item>
+                <a-menu-item key="7" class="lr"><a  href="rlogin.html">登录</a></a-menu-item>
+                <a-menu-item id="cuslog">
+                    <a-dropdown>
+						<span class="ant-dropdown-link cname">
+                            <span id="cus"></span>
+						</span>
+                        <a-menu slot="overlay" @click="yonghu">
+                            <a-menu-item key="grzx">
+                                个人中心
+                            </a-menu-item>
+                            <a-menu-item key="zx">
+                                注销
+                            </a-menu-item>
+                        </a-menu>
+                    </a-dropdown>
+                </a-menu-item>
+            </a-menu>
+
+        </a-layout-header>
+        <a-layout-content style="background-color: #fff;padding: 0 100px; margin-top: 64px">
+            <a-layout>
+                <a-layout-content style="margin-top: 20px;margin-left: 20px;">
+                    <div class="zf">
+                        <h1 style="display: inline">蜗壳租房 </h1>&nbsp;<h1 style="display: inline;color: gray">|</h1>&nbsp;
+                        <a id="allmap"></a>
+                    </div>
+                    <div class="zf">
+                        <a-input-search style="width: 500px" placeholder="请输入区域、商圈或小区名开始找房" v-model="hadr" @search="load(1)"
+                                        enterButton="Search" size="large"/>
+                    </div>
+                </a-layout-content>
+                <a-layout-content style="background-color: #fff">
+                    <div class="zf">
+                        <h3 style="display: inline;margin-left: 20px">已为您找到 <h3 style="color: #2f54eb;display: inline">
+                            {{count}}</h3> 套 郑州租房
+                        </h3>
+                    </div>
+                </a-layout-content>
+                <a-layout>
+                    <a-layout-content style="background-color: #fff;padding-right: 100px;">
+                        <div class="zf">
+                            <a-list id="zflist" itemLayout="horizontal">
+                                <a-list-item v-for="item in listData" :id="item.id">
+                                    <a-list-item-meta>
+                                        <a slot="title" @click="houseDetail(item.id)" :hid="item.id">{{item.htitle}}</a>
+                                        <span slot="description">{{item.hadr}}&nbsp;&nbsp;&nbsp;/</span>
+                                        <span slot="description">{{item.hspace}}㎡&nbsp;&nbsp;&nbsp;/</span>
+                                        <span slot="description">{{item.orientation}}&nbsp;&nbsp;&nbsp;/</span>
+                                        <span slot="description">{{item.hdesc}}</span>
+                                        <span id="price" slot="description">{{item.hrent}}<span slot="description">元/月</span></span>
+                                        <p slot="description"><a-icon type="clock-circle"></a-icon>&nbsp;{{item.newstime}}天前发布</p>
+                                        <ul id="ulinfo" slot="description" style="padding-left: 10px;">
+                                            <li slot="description" v-for="(k,index) in item.desctag">{{k}}</li>
+                                        </ul>
+                                        <img slot="avatar" :src="item.himg"/>
+                                    </a-list-item-meta>
+                                </a-list-item>
+                            </a-list>
+                            <!--分页-->
+                            <div style="margin-top: 20px;margin-left: 550px;">
+                                <a-pagination v-model="current" :total="count" @change="onChange"/>
+                            </div>
+                        </div>
+                    </a-layout-content>
+                    <a-layout-sider style="background-color: #fff;">
+                        <div style="font-size: 15px;font-weight: bold;margin:20px 0;">下载蜗壳APP</div>
+                        <img src="../../resources/images/wokezufang.png" style="width: 100px;height: 100px">
+                        <div style="font-size: 13px;margin-top: 10px">扫描上方二维码<br/>随时查看新房源</div>
+                        <a href="#" style="font-size: 13px">查看更多&gt;&gt;</a>
+                    </a-layout-sider>
+                </a-layout>
+                <a-layout-footer :style="{ textAlign: 'center' }">Copyright &copy; 2019.Volute.版权所有 | 本站内容版权属于原创，未经许可不得转载 </a-layout-footer>
+            </a-layout>
+        </a-layout-content>
+    </a-layout>
+</div>
+</body>
+<script>
+    new Vue({
+        el: "#house",
+        data: {
+            listData: [],
+            current: 1,
+            pageSize:10,
+            count:0,
+            hadr:""  //查询条件
+        },
+        mounted: function () {
+            this.load(1);
+        },
+        methods: {
+            load:function (current) {
+                var _this=this;
+                $.ajax({
+                    type: "post",
+                    dataType: "json",
+                    url: "/house/houseList/"+current+"/"+this.pageSize,
+                    data:{hadr:_this.hadr},
+                    success: function (data) {
+                        //console.log(data)
+                        _this.listData=data.object;
+                        _this.count=data.total;
+                        _this.current=current;
+                    }
+                });
+            },
+            onChange:function (page) {
+                var _this=this;
+                this.load(page);
+            },
+            houseDetail:function (hid) {
+                location.href="housedetail.html?id="+hid;
+            },
+            yonghu: function ({key}) {
+                var _this = this;
+                if (key == "zx") {
+                    this.$confirm({
+                        title: '确定退出?',
+                        okText: '确定',
+                        cancelText: '取消',
+                        onOk: function () {
+                            _this.killCusSession();
+                        }
+                    });
+                }
+                if (key == "grzx") {
+                    //alert("个人中心")
+                    window.location.href="personal.html";
+                }
+            },
+            killCusSession: function () {
+                $.ajax({
+                    type: "post",
+                    dataType: "json",
+                    url: "/login/killCusSession",
+                    success: function () {
+                        window.location.reload();
+                        //window.location.href="houselist.html";
+                    }
+                });
+            },
+        }
+    });
+</script>
+<script type="text/javascript">
+    $(function judgeCusLogin() {
+        $.ajax({
+            type: "post",
+            dataType: "json",
+            url: "/login/judgeCusLogin",
+            success: function (data) {
+                if (data.code == 200) {
+                    //alert(data.code);
+                    $(".lr").hide();
+                    $("#cus").show();
+                    $("#cus").html(data.object);
+                } else {
+                    $("#cus").hide();
+                    $(".lr").show();
+                }
+            }
+        });
+    });
+</script>
+</html>
