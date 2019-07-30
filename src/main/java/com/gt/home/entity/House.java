@@ -2,6 +2,9 @@ package com.gt.home.entity;
 
 import lombok.Data;
 
+/**
+ * 房源实体类
+ */
 @Data
 public class House {
     private Integer id; //房源编号
