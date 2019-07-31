@@ -11,4 +11,39 @@
     <select id="empLogin" resultType="map">
         select * from user_registry where account=#{account}
     </select>
+    <insert id="addEmp" parameterType="Emp">
+    insert into emp(emp_id,emp_name,emp_phone,emp_account,emp_password,emp_email,emp_qq,emp_headportrait,signature,emp_status)
+    values (#{emp_id},#{emp_name},#{emp_phone},#{emp_account},#{emp_password},#{emp_email},#{emp_qq},#{emp_headportrait},#{signature},#{emp_status})
+</insert>
+
+    <update id="updateEmp" parameterType="Emp">
+    update emp set emp_phone=#{emp_phone},emp_name=#{emp_name},emp_account=#{emp_account},emp_password=#{emp_password},emp_headportrait=#{emp_headportrait} where id=#{id}
+</update>
+
+    <delete id="deleteEmp" parameterType="Emp">
+    delete from emp where id=#{id}
+</delete>
+
+    <select id="queryEmp" resultType="map">
+        select * from emp
+        <where>
+            <if test="emp!=null and emp!=''">
+                and (emp_name like "%"#{emp}"%"
+                or emp_account like "%"#{emp}"%")
+            </if>
+        </where>  limit ${start},${pageSize}
+    </select>
+
+    <select id="queryPageCount" resultType="int">
+        select count(*) from emp
+        <where>
+            <if test="id!=null and id!=''">
+                and (id = #{id})
+            </if>
+            <if test="emp_account!=null and emp_account!=''">
+                and (emp_name like "%"#{emp_account}"%"
+                or emp_account like "%"#{emp_account}"%")
+            </if>
+        </where>
+    </select>
 </mapper>
